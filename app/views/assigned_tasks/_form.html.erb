@@ -1,0 +1,12 @@
+<%= simple_form_for @assigned_task, :html => { :class => 'form-horizontal' } do |f| %>
+  <%= f.input :user_id %>
+  <%= f.input :task_id %>
+  <%= f.input :reminder_frequency %>
+  <%= f.input :completed_at %>
+  <%= f.input :remind_at %>
+  <div class="form-actions">
+    <%= f.button :submit, :class => 'btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                assigned_tasks_path, :class => 'btn' %>
+  </div>
+<% end %>

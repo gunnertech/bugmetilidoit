@@ -1,0 +1,9 @@
+<%= simple_form_for @reminder, :html => { :class => 'form-horizontal' } do |f| %>
+  <%= f.input :assigned_task_id %>
+  <%= f.input :sent_at %>
+  <div class="form-actions">
+    <%= f.button :submit, :class => 'btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                reminders_path, :class => 'btn' %>
+  </div>
+<% end %>

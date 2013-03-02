@@ -11,7 +11,29 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130302044306) do
+ActiveRecord::Schema.define(:version => 20130302045831) do
+
+  create_table "assigned_tasks", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "task_id"
+    t.integer  "reminder_frequency"
+    t.datetime "completed_at"
+    t.datetime "remind_at"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  add_index "assigned_tasks", ["task_id"], :name => "index_assigned_tasks_on_task_id"
+  add_index "assigned_tasks", ["user_id"], :name => "index_assigned_tasks_on_user_id"
+
+  create_table "reminders", :force => true do |t|
+    t.integer  "assigned_task_id"
+    t.datetime "sent_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "reminders", ["assigned_task_id"], :name => "index_reminders_on_assigned_task_id"
 
   create_table "roles", :force => true do |t|
     t.string   "name"
@@ -23,6 +45,12 @@ ActiveRecord::Schema.define(:version => 20130302044306) do
 
   add_index "roles", ["name", "resource_type", "resource_id"], :name => "index_roles_on_name_and_resource_type_and_resource_id"
   add_index "roles", ["name"], :name => "index_roles_on_name"
+
+  create_table "tasks", :force => true do |t|
+    t.string   "title"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false
