@@ -24,7 +24,11 @@
         <b class="caret"></b>
       </a>
       <ul class="dropdown-menu">
-        <li><%= link_to t('active'), user_assigned_tasks_path(current_user,    view: 'active')  %></li>
+        <% if can? :create, AssignedTask %>
+          <li><%= link_to t('create_new'), new_user_assigned_task_path(current_user)  %></li>
+        <% else %>
+          <li><%= link_to t('active'), user_assigned_tasks_path(current_user,    view: 'active')  %></li>
+        <% end %>
         <li><%= link_to t('completed'), user_assigned_tasks_path(current_user, view: 'completed')  %></li>
         <li><%= link_to t('abandoned'), user_assigned_tasks_path(current_user, view: 'abandoned')  %></li>
       </ul>
@@ -34,4 +38,5 @@
     <%= link_to 'Sign up', new_user_registration_path %>
     </li>
   <% end %>
+  <li><%= link_to "A Gunner Technology App", "http://gunnertech.com" %>
 </ul>
