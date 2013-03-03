@@ -37,7 +37,7 @@ class AssignedTask < ActiveRecord::Base
     end
     
     def ready_for_delivery
-      where{ remind_at <= my{Time.now} }
+      by_view("active").where{ remind_at <= my{Time.now} }
     end
     
     def send_reminders
