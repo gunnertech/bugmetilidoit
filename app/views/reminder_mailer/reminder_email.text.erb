@@ -1,9 +1,9 @@
-Welcome to example.com, <%= @user.name %>
+<%= @user.name %>, <%= @reminder.task.title %>!
 ===============================================
- 
-You have successfully signed up to example.com,
-your username is: .
- 
-To login to the site, just follow this link: <%= @url %>.
- 
-Thanks for joining and have a great day!
+If not, you better do it, cause we're going to keep bugging you until you do!
+
+We've reminded you <%= @reminder.assigned_task.reminders.count %> times so far.
+
+If you have done it, congratulations! You're awesome! Just go here: <%= complete_assigned_task_url(@reminder.assigned_task, auth_token: @user.authentication_token, assigned_task: {action: "complete"}) %>
+
+If you haven't done it, and want to stop, getting this notification, you need to log into your account and abandon this task. Why no link? We don't want to make it so easy to give up!

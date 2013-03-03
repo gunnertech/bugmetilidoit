@@ -1,4 +1,22 @@
-<h3>Home</h3>
-<% @users.each do |user| %>
-  <p>User: <%=link_to user.name, user %></p>
-<% end %>
+<h3>Welcome to Bug Me Until I Do It!</h3>
+
+<p>This is a simple application that reminds you to do your <strong>most important</strong> task.</p>
+
+<p>Here's how it works:</p>
+<ol>
+  <li><%= link_to 'Sign up', new_user_registration_path %> if you haven't already</li>
+  <li>Once you're signed up, you'll see a menu item above called "My Items." Click that and then click "Add New Task."</li>
+  <li>Fill out the form using a descriptive title for the task and enter a number of minutes.</li>
+  <li>Click "Create assigned task."</li>
+</ol>
+
+<p>That's it!</p>
+
+<p>After that, we'll email you based on the number of minutes you specified until you completed this task.</p>
+
+<p>For example, if you entered "Go to the gym" and entered "10" for the interval, you'll get an email every 10 minutes until you go to the gym.</p>
+
+<p>Oh, and because this app is meant to help you complete your <strong>most important task</strong>, you'll only be able to create one task at a time. Once you complete a task, you can create another one.</p>
+
+<p>And please email us at bugmeuntilidoit at gunnertech.com with suggestions for improvement!</p>
+  
