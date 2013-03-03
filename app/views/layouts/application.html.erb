@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= content_for?(:title) ? yield(:title) : "Bugmetilidoit" %></title>
-    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Bugmetilidoit" %>">
+    <title><%= content_for?(:title) ? yield(:title) : "Bug Me Til I Do It" %></title>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Bug Me Til I Do IT" %>">
     <%= stylesheet_link_tag "application", :media => "all" %>
     <%= javascript_include_tag "application" %>
     <%= csrf_meta_tags %>
@@ -20,7 +20,12 @@
     <div id="main" role="main">
       <div class="container">
         <div class="content">
-           <div class="row">
+          <% if content_for?(:breadcrumb) %>
+            <div id="breadcrumbs" class="row-fluid">
+              <%= content_for(:breadcrumb) %>
+            </div>
+          <% end %>
+           <div class="row-fluid">
             <div class="span12">
               <%= render 'layouts/messages' %>
               <%= yield %>

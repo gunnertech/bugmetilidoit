@@ -6,8 +6,10 @@ class Ability
     if user.has_role? :admin
       can :manage, :all
     else
-      can :manage, AssignedTask, :user_id => user.id
+      can :update, AssignedTask, :user_id => user.id
       can :create, AssignedTask
     end
+    
+    cannot :create, AssignedTask if user.assigned_tasks.by_view('active').count > 0
   end
 end

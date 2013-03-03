@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <h1><%= @user.name %>, have you <%= @reminder.task.title %> yet?</h1>
+    <p>
+      If not, you better do it, cause we're going to keep bugging you until you do!
+    </p>
+    <p>
+      We've reminded you <%= @reminder.assigned_task.reminders.count %> times so far.
+    </p>
+    <p>
+      If you have done it, congratulations! You're awesome! Just <%= link_to "click this link", complete_assigned_task_url(@reminder.assigned_task, auth_token: @user.authentication_token, assigned_task: {action: "complete"}) %>
+    </p>
+    <p>Thanks for joining and have a great day!</p>
+  </body>
+</html>

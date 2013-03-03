@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130302045831) do
+ActiveRecord::Schema.define(:version => 20130303025254) do
 
   create_table "assigned_tasks", :force => true do |t|
     t.integer  "user_id"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20130302045831) do
     t.datetime "remind_at"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.datetime "abandoned_at"
   end
 
   add_index "assigned_tasks", ["task_id"], :name => "index_assigned_tasks_on_task_id"
@@ -52,6 +53,8 @@ ActiveRecord::Schema.define(:version => 20130302045831) do
     t.datetime "updated_at", :null => false
   end
 
+  add_index "tasks", ["title"], :name => "index_tasks_on_title"
+
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false
     t.string   "encrypted_password",     :default => "", :null => false
@@ -66,8 +69,10 @@ ActiveRecord::Schema.define(:version => 20130302045831) do
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
     t.string   "name"
+    t.string   "authentication_token"
   end
 
+  add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 

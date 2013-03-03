@@ -1,0 +1,38 @@
+<%= content_for(:breadcrumb) do %>
+  <div class="span6">
+    <ul class="breadcrumb">
+      <li><%= link_to current_user.to_s, [current_user] %><span class="divider">/</span></li>
+      <li class="active"><%= t(params[:view]) %> <%= t('tasks') %></li>
+    </ul>
+  </div>
+  
+  <div class="span6">
+    <%= link_to t('.new', :default => t("helpers.links.new")), [:new,current_user,:assigned_task], class: 'btn btn-primary' if can? :create, AssignedTask %>
+  </div>
+<% end %>
+
+<%- model_class = AssignedTask -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:task_id) %></th>
+      <th><%= t('remind_every') %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%= model_class.human_attribute_name(:completed_at) %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% collection.each do |assigned_task| %>
+      <tr>
+        <td><%= link_to assigned_task, assigned_task.task %></td>
+        <td><%= assigned_task.reminder_frequency %> <%= t('minutes') %></td>
+        <td><time class="convert"><%=l assigned_task.created_at %></td>
+        <td><time class="convert"><%=l assigned_task.completed_at if assigned_task.completed_at %></time></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+

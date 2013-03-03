@@ -1,12 +1,22 @@
-<%= simple_form_for @assigned_task, :html => { :class => 'form-horizontal' } do |f| %>
-  <%= f.input :user_id %>
-  <%= f.input :task_id %>
-  <%= f.input :reminder_frequency %>
-  <%= f.input :completed_at %>
-  <%= f.input :remind_at %>
+<%= content_for(:breadcrumb) do %>
+  <div class="span6">
+    <ul class="breadcrumb">
+      <li><%= link_to current_user.to_s, [current_user] %><span class="divider">/</span></li>
+      <li><%= link_to t('tasks'), [current_user,:assigned_tasks] %><span class="divider">/</span></li>
+      <% if resource.new_record? %>
+        <li class="active"><%= t('new') %></li>
+      <% else %>
+        <li><%= link_to resource, [current_user,resource] %><span class="divider">/</span></li>
+        <li class="active"><%= t('edit') %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= simple_form_for [parent,resource], :html => { :class => 'form-horizontal' } do |f| %>
+  <%= f.input :task_title, as: "string" %>
+  <%= f.input :reminder_frequency, hint: t('in_minutes') %>
   <div class="form-actions">
     <%= f.button :submit, :class => 'btn-primary' %>
-    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-                assigned_tasks_path, :class => 'btn' %>
   </div>
 <% end %>

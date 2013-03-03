@@ -1,4 +1,4 @@
-<%= link_to "Bugmetilidoit", root_path, :class => 'brand' %>
+<%= link_to "Bug Me Til I Do It", root_path, :class => 'brand' %>
 <ul class="nav">
   <% if user_signed_in? %>
     <li>
@@ -24,9 +24,9 @@
         <b class="caret"></b>
       </a>
       <ul class="dropdown-menu">
-        <li><%= link_to t('active'), user_assigned_tasks_path(current_user,status: 'active')  %></li>
-        <li><%= link_to t('completed'), user_assigned_tasks_path(current_user,status: 'completed')  %></li>
-        <li><%= link_to t('abandoned'), user_assigned_tasks_path(current_user,status: 'abandoned')  %></li>
+        <li><%= link_to t('active'), user_assigned_tasks_path(current_user,    view: 'active')  %></li>
+        <li><%= link_to t('completed'), user_assigned_tasks_path(current_user, view: 'completed')  %></li>
+        <li><%= link_to t('abandoned'), user_assigned_tasks_path(current_user, view: 'abandoned')  %></li>
       </ul>
     </li>
   <% else %>
