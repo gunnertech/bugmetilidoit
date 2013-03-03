@@ -58,6 +58,10 @@ class AssignedTask < ActiveRecord::Base
     task_title
   end
   
+  def time_to_complete
+    ((completed_at - created_at)/60).to_i
+  end
+  
   protected
   
   def fire_action
