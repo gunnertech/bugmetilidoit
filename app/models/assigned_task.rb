@@ -12,6 +12,13 @@ class AssignedTask < ActiveRecord::Base
   before_create :set_next_reminder_time
   
   class << self
+    def average_seconds_to_completion(relation=nil)
+      relation ||= scoped
+      hours, minutes = relation.by_view('completed').group{ id }.select{avg((completed_at - created_at)).as(time)}.first.time.split(/:/).map(&:to_i)
+      
+      hours*60+minutes
+    end
+    
     def filter(filter)
       relation = scoped
       filter.each_with_object({}).each do |(filter_type,filter_value),o|

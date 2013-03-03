@@ -33,6 +33,7 @@
         <li><%= link_to t('abandoned'), user_assigned_tasks_path(current_user, view: 'abandoned')  %></li>
       </ul>
     </li>
+    <li><%= link_to t('tasks'), tasks_path %></li>
   <% else %>
     <li>
     <%= link_to 'Sign up', new_user_registration_path %>

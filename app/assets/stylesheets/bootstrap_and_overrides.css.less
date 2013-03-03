@@ -30,3 +30,16 @@ body { padding-top: 60px; }
 //
 // Example:
 // @linkColor: #ff0000;
+
+th.boolean,
+td.boolean,
+th.count,
+td.count {
+  text-align: center !important;
+}
+
+th.number,
+td.number {
+  text-align: right !important;
+  @include nowrap;
+}
