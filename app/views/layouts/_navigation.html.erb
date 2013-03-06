@@ -1,43 +1,51 @@
 <%= link_to "Bug Me Til I Do It", root_path, :class => 'brand' %>
-<ul class="nav">
-  <% if user_signed_in? %>
-    <li>
-    <%= link_to 'Logout', destroy_user_session_path, :method=>'delete' %>
-    </li>
-  <% else %>
-    <li>
-    <%= link_to 'Login', new_user_session_path %>
-    </li>
-  <% end %>
-  <% if user_signed_in? %>
-    <li>
-    <%= link_to 'Edit account', edit_user_registration_path %>
-    </li>
-    <% if current_user.has_role? :admin %>
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+  <span class="icon-bar"></span>
+  <span class="icon-bar"></span>
+  <span class="icon-bar"></span>
+</a>
+<div class="nav-collapse collapse">
+  <ul class="nav">
+    <% if user_signed_in? %>
       <li>
-      <%= link_to 'Admin', users_path %>
+      <%= link_to 'Logout', destroy_user_session_path, :method=>'delete' %>
+      </li>
+    <% else %>
+      <li>
+      <%= link_to 'Login', new_user_session_path %>
       </li>
     <% end %>
-    <li class="dropdown">
-      <a href="#" class="dropdown-toggle"data-toggle="dropdown">
-        <%= t('my_tasks') %>
-        <b class="caret"></b>
-      </a>
-      <ul class="dropdown-menu">
-        <% if can? :create, AssignedTask %>
-          <li><%= link_to t('create_new'), new_user_assigned_task_path(current_user)  %></li>
-        <% else %>
-          <li><%= link_to t('active'), user_assigned_tasks_path(current_user,    view: 'active')  %></li>
-        <% end %>
-        <li><%= link_to t('completed'), user_assigned_tasks_path(current_user, view: 'completed')  %></li>
-        <li><%= link_to t('abandoned'), user_assigned_tasks_path(current_user, view: 'abandoned')  %></li>
-      </ul>
-    </li>
-    <li><%= link_to t('tasks'), tasks_path %></li>
-  <% else %>
-    <li>
-    <%= link_to 'Sign up', new_user_registration_path %>
-    </li>
-  <% end %>
-  <li><%= link_to "A Gunner Technology App", "http://gunnertech.com" %> 
-</ul>
+    <% if user_signed_in? %>
+      <li>
+      <%= link_to 'Edit account', edit_user_registration_path %>
+      </li>
+      <% if current_user.has_role? :admin %>
+        <li>
+        <%= link_to 'Admin', users_path %>
+        </li>
+      <% end %>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle"data-toggle="dropdown">
+          <%= t('my_tasks') %>
+          <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+          <% if can? :create, AssignedTask %>
+            <li><%= link_to t('create_new'), new_user_assigned_task_path(current_user)  %></li>
+          <% else %>
+            <li><%= link_to t('active'), user_assigned_tasks_path(current_user,    view: 'active')  %></li>
+          <% end %>
+          <li><%= link_to t('completed'), user_assigned_tasks_path(current_user, view: 'completed')  %></li>
+          <li><%= link_to t('abandoned'), user_assigned_tasks_path(current_user, view: 'abandoned')  %></li>
+        </ul>
+      </li>
+      <li><%= link_to t('tasks'), tasks_path %></li>
+    <% else %>
+      <li>
+      <%= link_to 'Sign up', new_user_registration_path %>
+      </li>
+    <% end %>
+  </ul>
+  
+  <p class="navbar-text"><%= link_to "A Gunner Technology App", "http://gunnertech.com" %></p>
+</div>
