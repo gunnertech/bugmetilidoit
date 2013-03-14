@@ -14,7 +14,7 @@ class Reminder < ActiveRecord::Base
       @client = Twilio::REST::Client.new "AC9cb7e9f9a83d6e1b6ab9cb907e89ac85", "9d71acdbf9d13fc82ce048557c3866aa"
       @client.account.sms.messages.create(
         :from => '+12038197645',
-        :to => self.user.mobile,
+        :to => "+1#{self.user.mobile}",
         :body => "#{self.task.title}. Did it? Click here: #{Rails.application.routes.url_helpers.complete_assigned_task_url(self.assigned_task, auth_token: self.user.authentication_token, assigned_task: {action: "complete"}, host: ENV['host'])}"
       ) rescue nil
       blowerio = RestClient::Resource.new(ENV['BLOWERIO_URL'])
