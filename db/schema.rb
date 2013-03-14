@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130303025254) do
+ActiveRecord::Schema.define(:version => 20130314032904) do
 
   create_table "assigned_tasks", :force => true do |t|
     t.integer  "user_id"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(:version => 20130303025254) do
     t.datetime "updated_at",                             :null => false
     t.string   "name"
     t.string   "authentication_token"
+    t.string   "mobile"
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
