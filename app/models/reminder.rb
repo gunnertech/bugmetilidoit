@@ -15,7 +15,7 @@ class Reminder < ActiveRecord::Base
       @client.account.sms.messages.create(
         :from => '+12038197645',
         :to => self.user.mobile,
-        :body => "#{@reminder.task.title}. Did it? Click here: #{complete_assigned_task_url(self.assigned_task, auth_token: self.authentication_token, assigned_task: {action: "complete"})}"
+        :body => "#{self.task.title}. Did it? Click here: #{complete_assigned_task_url(self.assigned_task, auth_token: self.authentication_token, assigned_task: {action: "complete"})}"
       ) rescue nil
       blowerio = RestClient::Resource.new(ENV['BLOWERIO_URL'])
       blowerio['/messages'].post :to => '+13018300451', :message => 'Fuck yeah, SMS!' rescue nil
