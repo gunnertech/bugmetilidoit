@@ -9,6 +9,12 @@ class Reminder < ActiveRecord::Base
   
   def send_notices
     ReminderMailer.reminder_email(self,self.user).deliver
+    
+    if ENV['BLOWERIO_URL']
+      blowerio = RestClient::Resource.new(ENV['BLOWERIO_URL'])
+      blowerio['/messages'].post :to => '+3018300451', :message => 'Fuck yeah, SMS!'
+    end
+    
     self.assigned_task.remind_at = Time.now + self.assigned_task.reminder_frequency.to_i.minutes
     self.assigned_task.save!
   end
