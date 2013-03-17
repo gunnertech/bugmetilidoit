@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Network:</b>
+  <%= @assigned_network.network %>
+</p>
+
+<p>
+  <b>Assigned task:</b>
+  <%= @assigned_network.assigned_task %>
+</p>
+
+
+<%= link_to 'Edit', edit_assigned_network_path(@assigned_network) %> |
+<%= link_to 'Back', assigned_networks_path %>

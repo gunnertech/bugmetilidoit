@@ -1,0 +1,25 @@
+<h1>Listing assigned_networks</h1>
+
+<table>
+  <tr>
+    <th>Network</th>
+    <th>Assigned task</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @assigned_networks.each do |assigned_network| %>
+  <tr>
+    <td><%= assigned_network.network %></td>
+    <td><%= assigned_network.assigned_task %></td>
+    <td><%= link_to 'Show', assigned_network %></td>
+    <td><%= link_to 'Edit', edit_assigned_network_path(assigned_network) %></td>
+    <td><%= link_to 'Destroy', assigned_network, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Assigned network', new_assigned_network_path %>

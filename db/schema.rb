@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130314032904) do
+ActiveRecord::Schema.define(:version => 20130317020834) do
+
+  create_table "assigned_networks", :force => true do |t|
+    t.integer  "network_id"
+    t.integer  "assigned_task_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "assigned_networks", ["assigned_task_id"], :name => "index_assigned_networks_on_assigned_task_id"
+  add_index "assigned_networks", ["network_id"], :name => "index_assigned_networks_on_network_id"
 
   create_table "assigned_tasks", :force => true do |t|
     t.integer  "user_id"
@@ -26,6 +36,12 @@ ActiveRecord::Schema.define(:version => 20130314032904) do
 
   add_index "assigned_tasks", ["task_id"], :name => "index_assigned_tasks_on_task_id"
   add_index "assigned_tasks", ["user_id"], :name => "index_assigned_tasks_on_user_id"
+
+  create_table "networks", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "reminders", :force => true do |t|
     t.integer  "assigned_task_id"
