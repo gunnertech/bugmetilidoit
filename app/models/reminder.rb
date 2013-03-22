@@ -14,14 +14,15 @@ class Reminder < ActiveRecord::Base
     
     if networks.include?(Network.find_by_name('SMS'))
       if ENV['BLOWERIO_URL']
+        body = "#{self.task.title}. Did it? Click here: #{Rails.application.routes.url_helpers.complete_assigned_task_url(self.assigned_task, auth_token: self.user.authentication_token, assigned_task: {action: "complete"}, host: ENV['HOST'])}"[0..159]
         @client = Twilio::REST::Client.new "AC9cb7e9f9a83d6e1b6ab9cb907e89ac85", "9d71acdbf9d13fc82ce048557c3866aa"
         @client.account.sms.messages.create(
           :from => '+12038197645',
           :to => "+1#{self.user.mobile}",
-          :body => "#{self.task.title}. Did it? Click here: #{Rails.application.routes.url_helpers.complete_assigned_task_url(self.assigned_task, auth_token: self.user.authentication_token, assigned_task: {action: "complete"}, host: ENV['HOST'])}"
+          :body => body
         )
         blowerio = RestClient::Resource.new(ENV['BLOWERIO_URL'])
-        blowerio['/messages'].post :to => '+13018300451', :message => 'Fuck yeah, SMS!' rescue nil
+        blowerio['/messages'].post :to => '+13018300451', :message => 'Fuck yeah, SMS!'
       end
     end
     
