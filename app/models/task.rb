@@ -2,6 +2,7 @@ class Task < ActiveRecord::Base
   self.per_page = 100
   
   has_many :assigned_tasks
+  has_many :reminders, through: :assigned_tasks
   
   attr_accessible :title
   

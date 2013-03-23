@@ -1,5 +1,5 @@
 $(->
-  
+  $('.control-group.user_twitter_user_name').addClass('input-prepend').find('.controls').prepend('<span class="add-on">@</span>')
   $(".live-search").on('focus', (event) ->
     $(event.target).autocomplete({
       source: $(event.target).data("url"),
