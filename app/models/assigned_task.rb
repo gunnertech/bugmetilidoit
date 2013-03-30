@@ -74,6 +74,11 @@ class AssignedTask < ActiveRecord::Base
     ((completed_at - created_at)/60).to_i
   end
   
+  def average_completion_time
+    hours, minutes = AssignedTask.by_view('completed').group{ id }.select{avg((completed_at-created_at)).as(time)}.first.time.split(/:/).map(&:to_i)
+    hours*60 + minutes
+  end
+  
   protected
   
   def fire_action
