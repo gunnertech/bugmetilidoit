@@ -62,7 +62,7 @@ Bugmetilidoit::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  config.action_mailer.default_url_options = { :host => ENV['DOMAIN'].blank? ? 'bugmetilidoit.herokuapp.com' : ENV['DOMAIN'] }
+  config.action_mailer.default_url_options = { :host => ENV['DOMAIN'].blank? ? 'bugmetilidoit.com' : ENV['DOMAIN'] }
   # ActionMailer Config
   # Setup for production - deliveries, no errors raised
   config.action_mailer.delivery_method = :smtp

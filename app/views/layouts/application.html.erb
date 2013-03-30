@@ -8,9 +8,10 @@
     <%= javascript_include_tag "application" %>
     <%= csrf_meta_tags %>
     <%= yield(:head) %>
+    <link rel="shortcut icon" href="/favicon.ico" />
   </head>
   <body class="<%= controller_name %> <%= action_name %>">
-    <div class="navbar navbar-fixed-top">
+    <div class="navbar navbar-fixed-top navbar-inverse">
       <nav class="navbar-inner">
         <div class="container">
           <%= render 'layouts/navigation' %>
@@ -36,5 +37,20 @@
         </div>
       </div> <!--! end of .container -->
     </div> <!--! end of #main -->
+    <footer class="main">
+      <div class="container">
+        <p>Designed and developed by <a href="http://gunnertech.com">Gunner Technology</a>.</p>
+        <p>
+          <%= link_to "Feedback", "" %> |
+          <%= link_to "Privacy Policy", "" %> |
+          <%= link_to "Terms of Service", "" %> |
+          <%= link_to "License our Content", "" %> |
+          <%= link_to "Media Kit", "" %> |
+          <%= link_to "About Us", "" %>
+        </p>
+        
+        <p><%= t(:copyright) %> &#169; Gunner Technology <%= t(:all_rights_reserved)%>.</p>
+      </div>
+    </footer>
   </body>
 </html>

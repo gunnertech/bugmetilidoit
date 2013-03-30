@@ -2,16 +2,28 @@ class AssignedTask < ActiveRecord::Base
   belongs_to :user
   belongs_to :task
   has_many :reminders, dependent: :destroy
-  attr_accessible :completed_at, :reminder_frequency, :task_title, :action
+  has_many :assigned_networks, dependent: :destroy
+  has_many :networks, through: :assigned_networks
+  
+  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids
   attr_accessor :task_title, :action
   
+  validates :task_title, presence: true
   validates :reminder_frequency, presence: true
+  validates :network_ids, presence: { message: 'must choose at least one' }
   
   before_validation :set_task, on: :create
   before_validation :fire_action, if: Proc.new { |assigned_task| assigned_task.action.present? }
   before_create :set_next_reminder_time
   
   class << self
+    def average_seconds_to_completion(relation=nil)
+      relation ||= scoped
+      hours, minutes = relation.by_view('completed').group{ id }.select{avg((completed_at - created_at)).as(time)}.first.time.split(/:/).map(&:to_i)
+      
+      hours*60+minutes
+    end
+    
     def filter(filter)
       relation = scoped
       filter.each_with_object({}).each do |(filter_type,filter_value),o|

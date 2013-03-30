@@ -1,0 +1,19 @@
+body {
+  background: #000000;
+  background-image: image-url("zenbg-1.png"), image-url("zenbg-2.png");
+  background-repeat: repeat-x, repeat;
+}
+
+.brand {
+  background: image-url('logo.png') no-repeat 0 10px scroll transparent;
+  background-size: 10%;
+  padding-left: 30px !important
+}
+
+.hero-unit {
+  h1 {
+    background: image-url('logo.png') no-repeat 0 10px scroll transparent;
+    line-height: 96px;
+    padding-left: 100px;
+  }
+}

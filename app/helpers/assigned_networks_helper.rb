@@ -1,0 +1,2 @@
+module AssignedNetworksHelper
+end

@@ -37,3 +37,6 @@ gem "hub", ">= 1.10.2", :require => nil, :group => [:development]
 gem 'clockwork'
 gem 'delayed_job', '>= 3.0.3'
 gem 'delayed_job_active_record', '>= 0.3.2'
+gem 'rest-client'
+gem 'twilio-ruby'
+gem "twitter"
