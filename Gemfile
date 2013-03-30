@@ -1,4 +1,4 @@
-ruby "2.0.0"
+ruby '2.0.0'
 source 'https://rubygems.org'
 gem 'rails', '3.2.12'
 group :assets do
@@ -7,36 +7,36 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 gem 'jquery-rails'
-gem "unicorn", ">= 4.3.1"
-gem "pg", ">= 0.14.1"
-gem "rspec-rails", ">= 2.12.2", :group => [:development, :test]
-gem "database_cleaner", ">= 0.9.1", :group => :test
-gem "email_spec", ">= 1.4.0", :group => :test
-gem "cucumber-rails", ">= 1.3.0", :group => :test, :require => false
-gem "launchy", ">= 2.2.0", :group => :test
-gem "capybara", ">= 2.0.2", :group => :test
-gem "factory_girl_rails", ">= 4.2.0", :group => [:development, :test]
-gem "less-rails", ">= 2.2.6", :group => :assets
-gem "twitter-bootstrap-rails", ">= 2.2.4", :group => :assets
-gem "libv8", ">= 3.11.8"
-gem "therubyracer", ">= 0.11.3", :group => :assets, :platform => :ruby, :require => "v8"
-gem "devise", ">= 2.2.3"
-gem "cancan", ">= 1.6.8"
-gem "rolify", ">= 3.2.0"
-gem "simple_form", ">= 2.0.4"
-gem "squeel"
-gem "bootstrap-will_paginate"
-gem "inherited_resources"
-gem "has_scope"
-gem "foreman"
-gem "quiet_assets", ">= 1.0.1", :group => :development
-gem "figaro", ">= 0.5.3"
-gem "better_errors", ">= 0.6.0", :group => :development
-gem "binding_of_caller", ">= 0.7.1", :group => :development, :platforms => [:mri_19, :rbx]
-gem "hub", ">= 1.10.2", :require => nil, :group => [:development]
+gem 'unicorn', '>= 4.3.1'
+gem 'pg', '>= 0.14.1'
+gem 'rspec-rails', '>= 2.12.2', :group => [:development, :test]
+gem 'database_cleaner', '>= 0.9.1', :group => :test
+gem 'email_spec', '>= 1.4.0', :group => :test
+gem 'cucumber-rails', '>= 1.3.0', :group => :test, :require => false
+gem 'launchy', '>= 2.2.0', :group => :test
+gem 'capybara', '>= 2.0.2', :group => :test
+gem 'factory_girl_rails', '>= 4.2.0', :group => [:development, :test]
+gem 'less-rails', '>= 2.2.6', :group => :assets
+gem 'twitter-bootstrap-rails', '>= 2.2.4', :group => :assets
+gem 'libv8', '>= 3.11.8'
+gem 'therubyracer', '>= 0.11.3', :group => :assets, :platform => :ruby, :require => 'v8'
+gem 'devise', '>= 2.2.3'
+gem 'cancan', '>= 1.6.8'
+gem 'rolify', '>= 3.2.0'
+gem 'simple_form', '>= 2.0.4'
+gem 'squeel'
+gem 'bootstrap-will_paginate'
+gem 'inherited_resources'
+gem 'has_scope'
+gem 'foreman'
+gem 'quiet_assets', '>= 1.0.1', :group => :development
+gem 'figaro', '>= 0.5.3'
+gem 'better_errors', '>= 0.6.0', :group => :development
+gem 'binding_of_caller', '>= 0.7.1', :group => :development, :platforms => [:mri_19, :rbx]
+gem 'hub', '>= 1.10.2', :require => nil, :group => [:development]
 gem 'clockwork'
 gem 'delayed_job', '>= 3.0.3'
 gem 'delayed_job_active_record', '>= 0.3.2'
 gem 'rest-client'
 gem 'twilio-ruby'
-gem "twitter"
+gem 'twitter'
