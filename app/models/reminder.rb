@@ -9,16 +9,16 @@ class Reminder < ActiveRecord::Base
   after_create :send_notices
   
   def send_notices
-    body = "#{self.task.title}. Did it? Click here: #{Rails.application.routes.url_helpers.complete_assigned_task_url(self.assigned_task, auth_token: self.user.authentication_token, assigned_task: {action: "complete"}, host: ENV['HOST'])}"[0..159]
+    body = "#{task.title}. Did it? Click here: #{Rails.application.routes.url_helpers.complete_assigned_task_url(assigned_task, auth_token: user.authentication_token, assigned_task: {action: "complete"}, host: ENV['HOST'])}"[0..159]
     
-    ReminderMailer.reminder_email(self,self.user).deliver if networks.include?(Network.find_or_create_by_name('Email'))
+    ReminderMailer.reminder_email(self,user).deliver if networks.include?(Network.find_or_create_by_name('Email'))
     
     if networks.include?(Network.find_or_create_by_name('SMS'))
       if ENV['BLOWERIO_URL']
         @client = Twilio::REST::Client.new "AC9cb7e9f9a83d6e1b6ab9cb907e89ac85", "9d71acdbf9d13fc82ce048557c3866aa"
         @client.account.sms.messages.create(
           :from => '+12038197645',
-          :to => "+1#{self.user.mobile}",
+          :to => "+1#{user.mobile}",
           :body => body
         )
         blowerio = RestClient::Resource.new(ENV['BLOWERIO_URL'])
@@ -31,7 +31,7 @@ class Reminder < ActiveRecord::Base
       Twitter.update(body)
     end
     
-    self.assigned_task.remind_at = Time.now + self.assigned_task.reminder_frequency.to_i.minutes
+    self.assigned_task.remind_at = assigned_task.remind_at + assigned_task.reminder_frequency.to_i.minutes
     self.assigned_task.save!
   end
   
