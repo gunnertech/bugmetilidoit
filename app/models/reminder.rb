@@ -12,7 +12,7 @@ class Reminder < ActiveRecord::Base
     Bitly.use_api_version_3
     bitly = Bitly.new("gunnertech", "R_b75c09fa28aa15f9e53ccb9245a9acf6")
     
-    u = Bitly.client.shorten(Rails.application.routes.url_helpers.complete_assigned_task_url(assigned_task, auth_token: user.authentication_token, assigned_task: {action: "complete"}, host: ENV['HOST']))
+    u = bitly.shorten(Rails.application.routes.url_helpers.complete_assigned_task_url(assigned_task, auth_token: user.authentication_token, assigned_task: {action: "complete"}, host: ENV['HOST']))
     body = "#{task.title}. Did it? Click here: #{u.short_url}"[0..159]
     
     ReminderMailer.reminder_email(self,user).deliver if networks.include?(Network.find_or_create_by_name('Email'))
