@@ -15,23 +15,14 @@ class Reminder < ActiveRecord::Base
     
     if networks.include?(Network.find_or_create_by_name('SMS'))
       if ENV['BLOWERIO_URL']
-<<<<<<< HEAD
         # @client = Twilio::REST::Client.new "AC9cb7e9f9a83d6e1b6ab9cb907e89ac85", "9d71acdbf9d13fc82ce048557c3866aa"
         # @client.account.sms.messages.create(
         #   :from => '+12038197645',
-        #   :to => "+1#{self.user.mobile}",
+        #   :to => "+1#{user.mobile}",
         #   :body => body
         # )
-=======
-        @client = Twilio::REST::Client.new "AC9cb7e9f9a83d6e1b6ab9cb907e89ac85", "9d71acdbf9d13fc82ce048557c3866aa"
-        @client.account.sms.messages.create(
-          :from => '+12038197645',
-          :to => "+1#{user.mobile}",
-          :body => body
-        )
->>>>>>> fba53acc43a9052110e00493a00c3d6f105ab9a9
         blowerio = RestClient::Resource.new(ENV['BLOWERIO_URL'])
-        blowerio['/messages'].post :to => "+1#{self.user.mobile}", :message => body
+        blowerio['/messages'].post :to => "+1#{user.mobile}", :message => body
       end
     end
     
