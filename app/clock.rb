@@ -4,4 +4,4 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'clockwork'
 include Clockwork
 
-every(10.minutes, 'reminders.send') { AssignedTask.send_reminders }
+every(1.minute, 'reminders.send') { AssignedTask.send_reminders }

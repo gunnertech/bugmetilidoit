@@ -5,7 +5,7 @@ class AssignedTask < ActiveRecord::Base
   has_many :assigned_networks, dependent: :destroy
   has_many :networks, through: :assigned_networks
   
-  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids
+  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at
   attr_accessor :task_title, :action
   
   validates :task_title, presence: true
@@ -49,7 +49,7 @@ class AssignedTask < ActiveRecord::Base
     end
     
     def ready_for_delivery
-      by_view("active").where{ remind_at <= my{Time.now} }
+      by_view("active").where{ (starts_at < Time.now) & (remind_at <= Time.now) }
     end
     
     def send_reminders
@@ -72,6 +72,11 @@ class AssignedTask < ActiveRecord::Base
   
   def time_to_complete
     ((completed_at - created_at)/60).to_i
+  end
+  
+  def average_completion_time
+    hours, minutes = AssignedTask.by_view('completed').group{ id }.select{avg((completed_at-created_at)).as(time)}.first.time.split(/:/).map(&:to_i)
+    hours*60 + minutes
   end
   
   protected
