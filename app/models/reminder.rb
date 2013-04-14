@@ -9,7 +9,9 @@ class Reminder < ActiveRecord::Base
   after_create :send_notices
   
   def send_notices
-    body = "#{task.title}. Did it? Click here: #{Rails.application.routes.url_helpers.complete_assigned_task_url(assigned_task, auth_token: user.authentication_token, assigned_task: {action: "complete"}, host: ENV['HOST'])}"[0..159]
+    Bitly.use_api_version_3
+    url = Bitly.client.shorten(Rails.application.routes.url_helpers.complete_assigned_task_url(assigned_task, auth_token: user.authentication_token, assigned_task: {action: "complete"}, host: ENV['HOST']))
+    body = "#{task.title}. Did it? Click here: #{url}"[0..159]
     
     ReminderMailer.reminder_email(self,user).deliver if networks.include?(Network.find_or_create_by_name('Email'))
     
