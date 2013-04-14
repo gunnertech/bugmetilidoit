@@ -4,7 +4,7 @@ class Task < ActiveRecord::Base
   has_many :assigned_tasks
   has_many :reminders, through: :assigned_tasks
   
-  attr_accessible :title
+  attr_accessible :title, :starts_at
   
   default_scope order{ title.asc }
   
