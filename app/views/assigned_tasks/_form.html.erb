@@ -16,7 +16,16 @@
 <%= simple_form_for [parent,resource], :html => { :class => 'form-horizontal' } do |f| %>
   <%= f.input :task_title, as: "string", input_html: {class: "live-search", 'data-url' => tasks_path(:json)} %>
   <%= f.input :reminder_frequency, hint: t('in_minutes') %>
-  <%= f.input :starts_at %>
+  <%= f.input :starts_at, order: [:month, :day, :year], ampm: true, minute_step: 15, input_html: {class: "input-small"} %>
+  
+  <div class="control-group integer required assigned_task_recurring_rule">
+    <label class="integer required control-label" for="assigned_task_recurring_rule">
+      <abbr title="required">*</abbr> Recurs
+    </label>
+    <div class="controls">
+      <%= f.select_recurring :recurring_rule %>
+    </div>
+  </div>
   
   <%= f.association :networks, as: :check_boxes %>
   <div class="form-actions">

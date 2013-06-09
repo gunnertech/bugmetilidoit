@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130330163901) do
+ActiveRecord::Schema.define(:version => 20130609205128) do
 
   create_table "assigned_networks", :force => true do |t|
     t.integer  "network_id"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(:version => 20130330163901) do
     t.datetime "updated_at",         :null => false
     t.datetime "abandoned_at"
     t.datetime "starts_at"
+    t.text     "recurring_rule"
   end
 
   add_index "assigned_tasks", ["task_id"], :name => "index_assigned_tasks_on_task_id"

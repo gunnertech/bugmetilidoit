@@ -1,11 +1,13 @@
 class AssignedTask < ActiveRecord::Base
+  include IceCube
+  
   belongs_to :user
   belongs_to :task
   has_many :reminders, dependent: :destroy
   has_many :assigned_networks, dependent: :destroy
   has_many :networks, through: :assigned_networks
   
-  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at
+  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at, :recurring_rule
   attr_accessor :task_title, :action
   
   validates :task_title, presence: true
@@ -15,6 +17,15 @@ class AssignedTask < ActiveRecord::Base
   before_validation :set_task, on: :create
   before_validation :fire_action, if: Proc.new { |assigned_task| assigned_task.action.present? }
   before_create :set_next_reminder_time
+  
+  def schedule
+    Schedule.from_hash(recurring_rule)
+  end
+  
+  def recurring_rule
+    return unless read_attribute(:recurring_rule).present?
+    RecurringSelect.dirty_hash_to_rule(read_attribute(:recurring_rule))
+  end
   
   class << self
     def average_seconds_to_completion(relation=nil)
@@ -79,6 +90,16 @@ class AssignedTask < ActiveRecord::Base
     hours*60 + minutes
   end
   
+  def schedule
+    if recurring_rule.present?
+      schedule = Schedule.new
+      schedule.add_recurrence_rule(recurring_rule)
+      schedule
+    else
+      nil
+    end
+  end
+  
   protected
   
   def fire_action
@@ -87,11 +108,22 @@ class AssignedTask < ActiveRecord::Base
       self.abandoned_at = Time.now
     when "complete"
       self.completed_at = Time.now
+      
+      AssignedTask.create! do |assigned_task|
+        assigned_task.user = user
+        assigned_task.task = task
+        # assigned_task.remind_at = remind_at
+        assigned_task.reminder_frequency = reminder_frequency
+        assigned_task.recurring_rule = self.read_attribute(:recurring_rule)
+        assigned_task.starts_at = schedule.next_occurrence unless schedule.nil?
+        assigned_task.networks << networks
+      end
+      
     end
   end
   
   def set_next_reminder_time
-    self.remind_at = Time.now + self.reminder_frequency.to_i.minutes
+    self.remind_at = (starts_at||Time.now) + self.reminder_frequency.to_i.minutes
   end
   
   def set_task

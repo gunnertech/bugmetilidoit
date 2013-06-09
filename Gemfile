@@ -41,3 +41,5 @@ gem 'rest-client'
 gem 'twilio-ruby'
 gem 'twitter'
 gem "bitly"
+gem "ice_cube"
+gem "recurring_select"

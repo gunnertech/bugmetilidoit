@@ -22,6 +22,7 @@
       <th><%= t('remind_every') %></th>
       <th><%= model_class.human_attribute_name(:created_at) %></th>
       <th><%= model_class.human_attribute_name(:remind_at) %></th>
+      <th><%=t 'recurs' %></th>
       <th><%=t '.actions', :default => t("helpers.actions") %></th>
     </tr>
   </thead>
@@ -32,11 +33,12 @@
         <td><%= assigned_task.reminder_frequency %> <%= t('minutes') %></td>
         <td><time class="convert"><%=l assigned_task.created_at %></td>
         <td><time class="convert"><%=l assigned_task.remind_at if assigned_task.remind_at %></time></td>
+        <td><%= assigned_task.recurring_rule %></td>
         <td>
           <%= link_to t('mark_completed'),
                       user_assigned_task_path(current_user,assigned_task, view: params[:view], assigned_task: {action: "complete"}),
                       :method => :put,
-                      :class => 'btn btn-mini btn-success' %>
+                      :class => 'btn btn-mini btn-success' if assigned_task.starts_at < Time.now %>
           <%= link_to t('abandon'),
                       user_assigned_task_path(current_user,assigned_task, view: params[:view], assigned_task: {action: "abandon"}),
                       :method => :put,
