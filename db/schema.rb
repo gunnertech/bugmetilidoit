@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130609205128) do
+ActiveRecord::Schema.define(:version => 20130611023153) do
 
   create_table "assigned_networks", :force => true do |t|
     t.integer  "network_id"
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(:version => 20130609205128) do
     t.string   "authentication_token"
     t.string   "mobile"
     t.string   "twitter_user_name"
+    t.string   "time_zone"
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true

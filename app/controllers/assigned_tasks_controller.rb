@@ -6,6 +6,7 @@ class AssignedTasksController < InheritedResources::Base
   
   before_filter :authorize_parent
   before_filter :set_default_filter
+  prepend_before_filter :fix_params, only: [:create,:update]
   
   def create
     create!{ user_assigned_tasks_url(current_user,view: 'active') }
@@ -30,5 +31,22 @@ class AssignedTasksController < InheritedResources::Base
   
   def set_default_filter
     params[:filter] ||= {}
+  end
+  
+  def fix_params
+    
+    params[:assigned_task][:starts_at_zone] = DateTime.new(
+                            params[:assigned_task]["starts_at_zone(1i)"].to_i, 
+                            params[:assigned_task]["starts_at_zone(2i)"].to_i,
+                            params[:assigned_task]["starts_at_zone(3i)"].to_i,
+                            params[:assigned_task]["starts_at_zone(4i)"].to_i,
+                            params[:assigned_task]["starts_at_zone(5i)"].to_i)
+        
+    params[:assigned_task].delete("starts_at_zone(1i)")
+    params[:assigned_task].delete("starts_at_zone(2i)")
+    params[:assigned_task].delete("starts_at_zone(3i)")
+    params[:assigned_task].delete("starts_at_zone(4i)")
+    params[:assigned_task].delete("starts_at_zone(5i)")
+    
   end
 end

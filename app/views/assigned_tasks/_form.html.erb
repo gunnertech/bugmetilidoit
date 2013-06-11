@@ -15,8 +15,13 @@
 
 <%= simple_form_for [parent,resource], :html => { :class => 'form-horizontal' } do |f| %>
   <%= f.input :task_title, as: "string", input_html: {class: "live-search", 'data-url' => tasks_path(:json)} %>
-  <%= f.input :reminder_frequency, hint: t('in_minutes') %>
-  <%= f.input :starts_at, order: [:month, :day, :year], ampm: true, minute_step: 15, input_html: {class: "input-small"} %>
+  <%= f.input :reminder_frequency, hint: t('in_minutes'), input_html: {step: 15} %>
+  
+  <% Time.use_zone(current_user.time_zone) do %>
+    <%= f.input :starts_at_zone, as: :datetime, order: [:month, :day, :year], ampm: true, minute_step: 15, input_html: {class: "input-small" } %>
+  <% end %>
+  
+  
   
   <div class="control-group integer required assigned_task_recurring_rule">
     <label class="integer required control-label" for="assigned_task_recurring_rule">

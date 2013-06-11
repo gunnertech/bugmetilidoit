@@ -7,8 +7,8 @@ class AssignedTask < ActiveRecord::Base
   has_many :assigned_networks, dependent: :destroy
   has_many :networks, through: :assigned_networks
   
-  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at, :recurring_rule
-  attr_accessor :task_title, :action
+  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at, :recurring_rule, :starts_at_zone
+  attr_accessor :task_title, :action, :starts_at_zone
   
   validates :task_title, presence: true
   validates :reminder_frequency, presence: true
@@ -17,12 +17,14 @@ class AssignedTask < ActiveRecord::Base
   before_validation :set_task, on: :create
   before_validation :fire_action, if: Proc.new { |assigned_task| assigned_task.action.present? }
   before_create :set_next_reminder_time
+  after_save :set_starts_at
   
   def schedule
     Schedule.from_hash(recurring_rule)
   end
   
   def recurring_rule
+    return if read_attribute(:recurring_rule) == "null"
     return unless read_attribute(:recurring_rule).present?
     RecurringSelect.dirty_hash_to_rule(read_attribute(:recurring_rule))
   end
@@ -60,7 +62,7 @@ class AssignedTask < ActiveRecord::Base
     end
     
     def ready_for_delivery
-      by_view("active").where{ (starts_at < Time.now) & (remind_at <= Time.now) }
+      by_view("active").where{ (starts_at <= Time.now) & (remind_at <= Time.now) }
     end
     
     def send_reminders
@@ -71,6 +73,20 @@ class AssignedTask < ActiveRecord::Base
       end
     end
   end
+  
+  def starts_at_zone
+    @starts_at_zone ||= if user
+      Time.use_zone(user.time_zone) do
+        Time.zone.parse(starts_at.to_s)
+      end
+    else
+      Time.zone.parse(starts_at.to_s)
+    end
+  end
+  
+  # def starts_at_zone=
+  #   self.starts_at = starts_at_zone.utc
+  # end
   
   def task_title
     return @task_title if @task_title
@@ -130,6 +146,10 @@ class AssignedTask < ActiveRecord::Base
     if task_title.present? && task_title != task.try(:title)
       self.task = Task.find_or_create_by_title(task_title)
     end
+  end
+  
+  def set_starts_at
+    self.update_column(:starts_at,starts_at_zone.utc)
   end
   
 end
