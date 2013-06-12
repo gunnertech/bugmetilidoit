@@ -35,18 +35,23 @@ class AssignedTasksController < InheritedResources::Base
   
   def fix_params
     
-    params[:assigned_task][:starts_at_zone] = DateTime.new(
-                            params[:assigned_task]["starts_at_zone(1i)"].to_i, 
-                            params[:assigned_task]["starts_at_zone(2i)"].to_i,
-                            params[:assigned_task]["starts_at_zone(3i)"].to_i,
-                            params[:assigned_task]["starts_at_zone(4i)"].to_i,
-                            params[:assigned_task]["starts_at_zone(5i)"].to_i)
+    params[:assigned_task] ||= {}
+    
+    if params[:assigned_task]["starts_at_zone(1i)"].present?
+      
+      params[:assigned_task][:starts_at_zone] = DateTime.new(
+                              params[:assigned_task]["starts_at_zone(1i)"].to_i, 
+                              params[:assigned_task]["starts_at_zone(2i)"].to_i,
+                              params[:assigned_task]["starts_at_zone(3i)"].to_i,
+                              params[:assigned_task]["starts_at_zone(4i)"].to_i,
+                              params[:assigned_task]["starts_at_zone(5i)"].to_i)
         
-    params[:assigned_task].delete("starts_at_zone(1i)")
-    params[:assigned_task].delete("starts_at_zone(2i)")
-    params[:assigned_task].delete("starts_at_zone(3i)")
-    params[:assigned_task].delete("starts_at_zone(4i)")
-    params[:assigned_task].delete("starts_at_zone(5i)")
+      params[:assigned_task].delete("starts_at_zone(1i)")
+      params[:assigned_task].delete("starts_at_zone(2i)")
+      params[:assigned_task].delete("starts_at_zone(3i)")
+      params[:assigned_task].delete("starts_at_zone(4i)")
+      params[:assigned_task].delete("starts_at_zone(5i)")
+    end
     
   end
 end
