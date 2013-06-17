@@ -31,8 +31,8 @@ class Reminder < ActiveRecord::Base
         #   :to => "+1#{user.mobile}",
         #   :body => body
         # )
-        blowerio = RestClient::Resource.new(ENV['BLOWERIO_URL'])
         begin
+          blowerio = RestClient::Resource.new(ENV['BLOWERIO_URL'])
           blowerio['/messages'].post :to => "+1#{user.mobile}", :message => body
         rescue
           blowerio = RestClient::Resource.new("https://7f689c2e-8e44-4efb-83f6-9e950ba58662:kcE1EcCuSvxHYFthePeLkw@api.blower.io/")
