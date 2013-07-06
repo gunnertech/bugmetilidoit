@@ -139,7 +139,7 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def set_next_reminder_time
-    self.remind_at = (starts_at||(starts_at_zone.try(:utc)||Time.now) + self.reminder_frequency.to_i.minutes
+    self.remind_at = (starts_at||starts_at_zone.try(:utc)||Time.now) + self.reminder_frequency.to_i.minutes
   end
   
   def set_task
