@@ -7,17 +7,19 @@ class AssignedTask < ActiveRecord::Base
   has_many :assigned_networks, dependent: :destroy
   has_many :networks, through: :assigned_networks
   
-  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at, :recurring_rule, :starts_at_zone
-  attr_accessor :task_title, :action, :starts_at_zone
+  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at, :recurring_rule, :starts_at_zone, :starts_at_temp, :reminder_interval, :raw_reminder_frequency
+  attr_accessor :task_title, :action, :starts_at_zone, :starts_at_temp
   
   validates :task_title, presence: true
-  validates :reminder_frequency, presence: true
+  validates :reminder_frequency, presence: true, numericality: {greater_than: 15}
   validates :network_ids, presence: { message: 'must choose at least one' }
   
+  before_validation :set_reminder_frequency
   before_validation :set_task, on: :create
   before_validation :fire_action, if: Proc.new { |assigned_task| assigned_task.action.present? }
   before_create :set_next_reminder_time
   after_save :set_starts_at
+  
   
   def schedule
     Schedule.from_hash(recurring_rule)
@@ -75,12 +77,13 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def starts_at_zone
-    @starts_at_zone ||= if user
+    return @starts_at_zone if starts_at_temp.nil? || (@starts_at_zone.present? && !@starts_at_zone.is_a?(String))
+    @starts_at_zone = if user
       Time.use_zone(user.time_zone) do
-        Time.zone.parse(starts_at.to_s)
+        Date.strptime(starts_at_temp.to_s,"%m/%d/%Y %I:%M %p").to_time
       end
     else
-      Time.zone.parse(starts_at.to_s)
+      Date.strptime(starts_at_temp.to_s,"%m/%d/%Y %I:%M %p").to_time
     end
   end
   
@@ -139,7 +142,11 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def set_next_reminder_time
-    self.remind_at = (starts_at||starts_at_zone.try(:utc)||Time.now) + self.reminder_frequency.to_i.minutes
+    if !starts_at.present? || starts_at.is_a?(String)
+      self.remind_at = (starts_at_zone.try(:utc)||Time.now)# + self.reminder_frequency.to_i.minutes
+    else
+      self.remind_at = (starts_at||starts_at_zone.try(:utc)||Time.now)# + self.reminder_frequency.to_i.minutes
+    end
   end
   
   def set_task
@@ -149,7 +156,13 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def set_starts_at
-    self.update_column(:starts_at,starts_at_zone.utc)
+    self.update_column(:starts_at,starts_at_zone.utc) if starts_at_zone.present?
+  end
+  
+  def set_reminder_frequency
+    if reminder_interval.present? && raw_reminder_frequency.present?
+      self.reminder_frequency ||= raw_reminder_frequency.send(reminder_interval.downcase.to_sym) / 60
+    end
   end
   
 end

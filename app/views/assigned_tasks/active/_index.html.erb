@@ -30,9 +30,9 @@
     <% collection.each do |assigned_task| %>
       <tr>
         <td><%= link_to assigned_task, assigned_task.task %></td>
-        <td><%= assigned_task.reminder_frequency %> <%= t('minutes') %></td>
+        <td><%= pluralize((assigned_task.raw_reminder_frequency||assigned_task.reminder_frequency), (assigned_task.reminder_interval||"Minute")) %></td>
         <td><%= assigned_task.reminders.count %></td>
-        <td><time class="convert"><%=l assigned_task.remind_at if assigned_task.remind_at %></time></td>
+        <td><time class="convert"><%=l assigned_task.remind_at.in_time_zone(current_user.time_zone) if assigned_task.remind_at %></time></td>
         <td><%= assigned_task.recurring_rule %></td>
         <td>
           <div class="btn-group">

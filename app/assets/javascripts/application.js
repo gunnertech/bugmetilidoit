@@ -12,6 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jqueryui
+//= require jquery.timepicker
 //= require twitter/bootstrap
 //= require recurring_select
 //= require_tree .

@@ -24,22 +24,14 @@ class Reminder < ActiveRecord::Base
     ReminderMailer.reminder_email(self,user).deliver if networks.include?(Network.find_or_create_by_name('Email'))
     
     if networks.include?(Network.find_or_create_by_name('SMS'))
-      # if ENV['BLOWERIO_URL']
-      #   # @client = Twilio::REST::Client.new "AC9cb7e9f9a83d6e1b6ab9cb907e89ac85", "9d71acdbf9d13fc82ce048557c3866aa"
-      #   # @client.account.sms.messages.create(
-      #   #   :from => '+12038197645',
-      #   #   :to => "+1#{user.mobile}",
-      #   #   :body => body
-      #   # )
-      #   begin
-      #     blowerio = RestClient::Resource.new(ENV['BLOWERIO_URL'])
-      #     blowerio['/messages'].post :to => "+1#{user.mobile}", :message => body
-      #   rescue
-      #     blowerio = RestClient::Resource.new("https://7f689c2e-8e44-4efb-83f6-9e950ba58662:kcE1EcCuSvxHYFthePeLkw@api.blower.io/")
-      #     blowerio['/messages'].post :to => "+1#{user.mobile}", :message => body
-      #   end
-      #     
-      # end
+      client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
+      to = Rails.env.production? ? "+1#{phone_number}" : "+1#{ENV['DUMMY_NUMBER']}"
+      number = ENV['TWILIO_NUMBERS'].split(",").sample
+      client.account.sms.messages.create(
+        :from => "+1#{number}",
+        :to => "+1#{user.mobile}",
+        :body => "#{body} not you? reply 'STOP'"
+      )
     end
     
     if networks.include?(Network.find_or_create_by_name('Twitter'))

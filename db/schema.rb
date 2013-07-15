@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130611023153) do
+ActiveRecord::Schema.define(:version => 20130715185005) do
 
   create_table "assigned_networks", :force => true do |t|
     t.integer  "network_id"
@@ -29,11 +29,13 @@ ActiveRecord::Schema.define(:version => 20130611023153) do
     t.integer  "reminder_frequency"
     t.datetime "completed_at"
     t.datetime "remind_at"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
     t.datetime "abandoned_at"
     t.datetime "starts_at"
     t.text     "recurring_rule"
+    t.integer  "raw_reminder_frequency"
+    t.string   "reminder_interval"
   end
 
   add_index "assigned_tasks", ["task_id"], :name => "index_assigned_tasks_on_task_id"

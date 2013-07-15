@@ -9,6 +9,9 @@ class AssignedTasksController < InheritedResources::Base
   prepend_before_filter :fix_params, only: [:create,:update]
   
   def create
+    # @assigned_task = current_user.assigned_tasks.build(params[:assigned_tasks])
+    # raise @assigned_task.starts_at_zone
+    # @assigned_tasks.starts_at = @assigned_task.starts_at_zone
     create!{ user_assigned_tasks_url(current_user,view: 'active') }
   end
   
@@ -36,6 +39,8 @@ class AssignedTasksController < InheritedResources::Base
   def fix_params
     
     params[:assigned_task] ||= {}
+    
+    params[:assigned_task][:starts_at_temp] = params[:assigned_task][:starts_at_zone]
     
     if params[:assigned_task]["starts_at_zone(1i)"].present?
       
