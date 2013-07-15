@@ -28,8 +28,10 @@
           <% end %>
            <div class="row-fluid">
             <div class="span12">
-              <%= render 'layouts/messages' %>
-              <%= yield %>
+              <div class="scroll-pane">
+                <%= render 'layouts/messages' %>
+                <%= yield %>
+              </div>
             </div>
           </div>
           <footer>
