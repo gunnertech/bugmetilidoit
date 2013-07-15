@@ -19,9 +19,8 @@
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name(:task_id) %></th>
-      <th><%= t('remind_every') %></th>
-      <th><%= t('total_reminders') %></th>
-      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%= t('every') %></th>
+      <th><%= t('count') %></th>
       <th><%= model_class.human_attribute_name(:completed_at) %></th>
       <th><%= t('time_to_complete')%>
     </tr>
@@ -31,8 +30,7 @@
       <tr>
         <td><%= link_to assigned_task, assigned_task.task %></td>
         <td><%= assigned_task.reminder_frequency %> <%= t('minutes') %></td>
-        <td><%= assigned_task.reminders.count %>
-        <td><time class="convert"><%=l assigned_task.created_at %></td>
+        <td><%= assigned_task.reminders.count %></td>
         <td><time class="convert"><%=l assigned_task.completed_at if assigned_task.completed_at %></time></td>
         <td><%= assigned_task.time_to_complete %> <%= t('minutes') %>
       </tr>
