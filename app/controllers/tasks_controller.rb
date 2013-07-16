@@ -6,6 +6,7 @@ class TasksController < InheritedResources::Base
   def collection
     return @tasks if @tasks
     @tasks = end_of_association_chain.accessible_by(current_ability).paginate(page: params[:page])
-    @tasks = @tasks.where{ title =~ "#{params[:term]}%"}
+    @tasks = @tasks.where{ title =~ "#{params[:term]}%"} if params[:term].present?
+    @tasks
   end
 end

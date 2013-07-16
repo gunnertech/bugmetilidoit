@@ -43,3 +43,5 @@ gem 'twitter'
 gem "bitly"
 gem "ice_cube"
 gem "recurring_select"
+gem "oauth2"
+gem "oauth"

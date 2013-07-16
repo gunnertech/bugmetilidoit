@@ -16,5 +16,9 @@ Bugmetilidoit::Application.routes.draw do
   devise_for :users
   resources :users do
     resources :assigned_tasks
+    member do
+      get 'oauth'
+      get 'twitter_oauth'
+    end
   end
 end

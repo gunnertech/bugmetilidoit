@@ -31,12 +31,16 @@ class AssignedTask < ActiveRecord::Base
     RecurringSelect.dirty_hash_to_rule(read_attribute(:recurring_rule))
   end
   
+  def url
+    "http://#{ENV['HOST']}/tasks/#{task.to_param}"
+  end
+  
   class << self
     def average_seconds_to_completion(relation=nil)
       relation ||= scoped
-      hours, minutes = relation.by_view('completed').group{ id }.select{avg((completed_at - created_at)).as(time)}.first.time.split(/:/).map(&:to_i)
+      hours, minutes = relation.by_view('completed').group{ id }.select{avg((completed_at - created_at)).as(time)}.first.time.split(/:/).map(&:to_i) rescue nil
       
-      hours*60+minutes
+      hours*60+minutes rescue nil
     end
     
     def filter(filter)
@@ -119,6 +123,15 @@ class AssignedTask < ActiveRecord::Base
     end
   end
   
+  def post_to_twitter
+    client = Twitter::Client.new(
+      :oauth_token => user.twitter_access_token,
+      :oauth_token_secret => user.twitter_access_secret
+    )
+    
+    client.update("Just completed a task: #{self.to_s} in #{time_to_complete} minutes. #{url}")
+  end
+  
   protected
   
   def fire_action
@@ -127,7 +140,7 @@ class AssignedTask < ActiveRecord::Base
       self.abandoned_at = Time.now
     when "complete"
       self.completed_at = Time.now
-      
+      post_to_twitter rescue nil
       AssignedTask.create! do |assigned_task|
         assigned_task.user = user
         assigned_task.task = task

@@ -14,7 +14,11 @@
 <% end %>
 
 <%= simple_form_for [parent,resource], :html => { :class => 'form-horizontal' } do |f| %>
-  <%= f.input :task_title, as: "string", input_html: {class: "live-search", 'data-url' => tasks_path(:json)} %>
+  <% if @task.present? %>
+    <%= f.input :task_title, as: "string", input_html: {class: "live-search", 'data-url' => tasks_path(:json), value: @task.to_s} %>
+  <% else %>
+    <%= f.input :task_title, as: "string", input_html: {class: "live-search", 'data-url' => tasks_path(:json)} %>
+  <% end %>
   <%= f.input :raw_reminder_frequency, label: "Reminder Frequency", input_html: {step: 1} %>
   <%= f.input :reminder_interval, collection: ['Minutes', 'Hours', 'Days', 'Weeks', 'Months', 'Years'] %>
   

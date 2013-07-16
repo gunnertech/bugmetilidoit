@@ -8,15 +8,22 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :role_ids, :as => :admin
-  attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :mobile, :twitter_user_name, :time_zone
+  attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :mobile, :twitter_user_name, :time_zone, :disconnect_from_twitter
+  attr_accessor :disconnect_from_twitter
   
   has_many :assigned_tasks, dependent: :destroy
   has_many :tasks, through: :assigned_tasks
   
+  before_validation :remove_twitter_token, if: Proc.new{ |user| user.disconnect_from_twitter == "1" }
   before_save :ensure_authentication_token
   
   def to_s
     name
   end
   
+  
+  def remove_twitter_token
+    self.twitter_access_token = nil
+    self.twitter_access_secret = nil
+  end
 end

@@ -6,12 +6,10 @@ class AssignedTasksController < InheritedResources::Base
   
   before_filter :authorize_parent
   before_filter :set_default_filter
+  before_filter :set_task
   prepend_before_filter :fix_params, only: [:create,:update]
   
   def create
-    # @assigned_task = current_user.assigned_tasks.build(params[:assigned_tasks])
-    # raise @assigned_task.starts_at_zone
-    # @assigned_tasks.starts_at = @assigned_task.starts_at_zone
     create!{ user_assigned_tasks_url(current_user,view: 'active') }
   end
   
@@ -58,5 +56,9 @@ class AssignedTasksController < InheritedResources::Base
       params[:assigned_task].delete("starts_at_zone(5i)")
     end
     
+  end
+  
+  def set_task
+    @task = Task.find(params[:task_id]) if params[:task_id].present?
   end
 end

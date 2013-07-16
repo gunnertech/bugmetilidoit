@@ -6,11 +6,13 @@
   <%= f.input :time_zone, priority: /US/ %>
   <%= f.input :mobile %>
   <%= f.input :twitter_user_name, input_html: {class: "span6"} %>
+  <%= f.input :disconnect_from_twitter, as: :boolean, label: "Disconnect from Twitter?" if current_user.try(:twitter_access_token) %>
   <%= f.input :password, :autocomplete => "off", :hint => "leave it blank if you don't want to change it", :required => false %>
   <%= f.input :password_confirmation, :required => false %>
   <%= f.input :current_password, :hint => "we need your current password to confirm your changes", :required => true %>
   <div class="form-actions">
     <%= f.button :submit, 'Update', :class => 'btn-primary' %>
+    <%= link_to("<i class=\"icon icon-twitter\"></i> Connect with Twitter".html_safe, twitter_oauth_user_path(current_user), class: 'btn btn-danger') unless current_user.try(:twitter_access_token) %>
   </div>
 <% end %>
 <h3>Cancel my account</h3>
