@@ -57,3 +57,56 @@ td.number {
   overflow:auto;
   padding-bottom: 100px;
 }
+
+@media (max-width: 767px) { 
+  .navbar {
+    .brand {
+      margin-left: 10px;
+    }
+  }
+}
+
+@media (max-width: 480px) { 
+  .page-header {
+    display: none;
+  }
+  
+  
+  .hero-unit {
+    h1 {
+      display: none;
+    }
+    background: white;
+    padding: 0px;
+  }
+  
+  #breadcrumbs {
+    .btn {
+      margin-bottom: 20px;
+      .btn-block();
+      &:before {
+        content: "Create ";
+      }
+      &:after {
+        content: " Task";
+      }
+    }
+  }
+}
+
+.video-container {     
+  position: relative;     
+  padding-bottom: 56.25%;     
+  padding-top: 30px; 
+  height: 0; 
+  overflow: hidden; 
+} 
+.video-container iframe, 
+.video-container object, 
+.video-container embed {     
+  position: absolute;     
+  top: 0;     
+  left: 0;     
+  width: 100%;     
+  height: 100%; 
+}

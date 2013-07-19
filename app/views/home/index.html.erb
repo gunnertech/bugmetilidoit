@@ -1,8 +1,18 @@
 <div class="hero-unit">
 
   <h1>Welcome to Bug Me Until I Do It!</h1>
+  
+  <% if signed_in? %>
+    <p>Looks like you're all set! <%= link_to "Head on over to your tasks", user_assigned_tasks_path(current_user) %></p>
+    <p>Or, if you're not familiar with Bug Me Til I Do It, continue reading to get started.</p>
+  <% end %>
 
   <p>This is a simple application that reminds you to do your <strong>most important</strong> task.</p>
+  
+  <div class="video-container">
+    <iframe class="" width="800" height="450" src="//www.youtube.com/embed/tvd3zS_HY1E" frameborder="0" allowfullscreen></iframe>
+  </div>
+  
 
   <p>Here's how it works:</p>
   <ol>

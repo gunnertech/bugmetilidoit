@@ -24,10 +24,15 @@ class AssignedTasksController < InheritedResources::Base
   end
   
   protected
+  
+  def view
+    params[:view] ||= 'active'
+  end
+  
   def collection
     return @assigned_tasks if @assigned_tasks
     @assigned_tasks = end_of_association_chain.accessible_by(current_ability).paginate(:page => params[:page])
-    @assigned_tasks = @assigned_tasks.by_view(params[:view])
+    @assigned_tasks = @assigned_tasks.by_view(view)
   end
   
   def set_default_filter
