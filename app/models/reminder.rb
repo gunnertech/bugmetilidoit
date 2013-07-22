@@ -25,11 +25,11 @@ class Reminder < ActiveRecord::Base
     
     if networks.include?(Network.find_or_create_by_name('SMS'))
       client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
-      to = Rails.env.production? ? "+1#{phone_number}" : "+1#{ENV['DUMMY_NUMBER']}"
+      to = Rails.env.production? ? "+1#{user.mobile}" : "+1#{ENV['DUMMY_NUMBER']}"
       number = ENV['TWILIO_NUMBERS'].split(",").sample
       client.account.sms.messages.create(
         :from => "+1#{number}",
-        :to => "+1#{user.mobile}",
+        :to => to,
         :body => "#{body} not you? reply 'STOP'"
       )
     end
