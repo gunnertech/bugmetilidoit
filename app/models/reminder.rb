@@ -27,11 +27,15 @@ class Reminder < ActiveRecord::Base
       client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
       to = Rails.env.production? ? "+1#{user.mobile}" : "+1#{ENV['DUMMY_NUMBER']}"
       number = ENV['TWILIO_NUMBERS'].split(",").sample
-      client.account.sms.messages.create(
-        :from => "+1#{number}",
-        :to => to,
-        :body => "#{body} not you? reply 'STOP'"
-      )
+      begin
+        client.account.sms.messages.create(
+          :from => "+1#{number}",
+          :to => to,
+          :body => "#{body} not you? reply 'STOP'"
+        )
+      rescue
+        Rails.logger.warn("^^^^BAD COMBO: from: #{number} to: #{to}")
+      end
     end
     
     if networks.include?(Network.find_or_create_by_name('Twitter'))
