@@ -16,7 +16,7 @@
   <tbody>
     <% @tasks.each do |task| %>
       <tr>
-        <td><%= task.title %></td>
+        <td><%= link_to task, task %></td>
         <td class="count"><%= task.assigned_tasks.by_view('active').count %></td>
         <td class="count"><%= task.assigned_tasks.by_view('completed').count %></td>
         <td class="count"><%= task.assigned_tasks.by_view('abandoned').count %></td>

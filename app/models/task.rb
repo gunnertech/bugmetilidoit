@@ -3,6 +3,7 @@ class Task < ActiveRecord::Base
   
   has_many :assigned_tasks
   has_many :reminders, through: :assigned_tasks
+  has_many :users, through: :assigned_tasks
   
   attr_accessible :title, :starts_at
   

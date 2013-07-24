@@ -14,6 +14,8 @@ class Ability
       # cannot :create, AssignedTask if user.assigned_tasks.by_view('active').count > 0
       
       can :read, Task
+    else
+      can :read, Task
     end
   end
 end
