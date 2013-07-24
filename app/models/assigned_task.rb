@@ -85,10 +85,10 @@ class AssignedTask < ActiveRecord::Base
     return @starts_at_zone if starts_at_temp.nil? || (@starts_at_zone.present? && !@starts_at_zone.is_a?(String))
     @starts_at_zone = if user
       Time.use_zone(user.time_zone) do
-        Date.strptime(starts_at_temp.to_s,"%m/%d/%Y %I:%M %p").to_time
+        DateTime.strptime(starts_at_temp.to_s,"%m/%d/%Y %I:%M %p").to_time
       end
     else
-      Date.strptime(starts_at_temp.to_s,"%m/%d/%Y %I:%M %p").to_time
+      DateTime.strptime(starts_at_temp.to_s,"%m/%d/%Y %I:%M %p").to_time
     end
   end
   
