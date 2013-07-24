@@ -132,6 +132,13 @@ class AssignedTask < ActiveRecord::Base
     client.update("Just completed a task: #{self.to_s} in #{time_to_complete} minutes. #{url}")
   end
   
+  def post_to_facebook(token=nil,url=nil)
+    token ||= user.facebook_access_token
+    url ||= Rails.application.routes.url_helpers.task_url(task, host: ENV['HOST'])
+    graph = Koala::Facebook::API.new(token)
+    graph.put_connections("me", "feed", message: "Just completed a task (#{task.to_s}) in #{time_to_complete} minutes. #{url}") rescue nil
+  end
+  
   protected
   
   def fire_action
