@@ -19,6 +19,7 @@ class AssignedTask < ActiveRecord::Base
   before_validation :fire_action, if: Proc.new { |assigned_task| assigned_task.action.present? }
   before_create :set_next_reminder_time
   after_save :set_starts_at
+  after_create :send_creation_message_to_facebook, if: Proc.new { |assigned_task| assigned_task.user.facebook_access_token.present? }
   
   
   def schedule
@@ -105,7 +106,7 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def time_to_complete
-    ((completed_at - created_at)/60).to_i
+    (((completed_at||0) - created_at)/60).to_i
   end
   
   def average_completion_time
@@ -129,14 +130,19 @@ class AssignedTask < ActiveRecord::Base
       :oauth_token_secret => user.twitter_access_secret
     )
     
-    client.update("Just completed a task: #{self.to_s} in #{time_to_complete} minutes. #{url}")
+    client.update("Just completed a task (#{self.to_s}) after #{time_to_complete} minutes and #{reminders.count} reminders. #{url}")
   end
   
-  def post_to_facebook(token=nil,url=nil)
+  def send_creation_message_to_facebook
+    post_to_facebook("Just scheduled a task to do: #{task.to_s}. Click 'Like' if you think I'm going to finish it on time or comment and tell me why you think I won't.")
+  end
+  
+  def post_to_facebook(message=nil,token=nil,url=nil)
     token ||= user.facebook_access_token
     url ||= Rails.application.routes.url_helpers.task_url(task, host: ENV['HOST'])
+    message ||= "Just completed a task (#{task.to_s}) after #{time_to_complete} minutes and #{reminders.count} reminders."
     graph = Koala::Facebook::API.new(token)
-    graph.put_connections("me", "feed", message: "Just completed a task (#{task.to_s}) in #{time_to_complete} minutes. #{url}") rescue nil
+    graph.put_connections("me", "feed", message: "#{message} #{url}")
   end
   
   protected
@@ -147,7 +153,12 @@ class AssignedTask < ActiveRecord::Base
       self.abandoned_at = Time.now
     when "complete"
       self.completed_at = Time.now
-      post_to_twitter rescue nil
+      if user.twitter_access_token
+        post_to_twitter rescue nil 
+      end
+      if user.facebook_access_token
+        post_to_facebook rescue nil
+      end
       AssignedTask.create! do |assigned_task|
         assigned_task.user = user
         assigned_task.task = task
