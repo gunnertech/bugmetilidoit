@@ -1,6 +1,42 @@
 class UsersController < InheritedResources::Base
-  skip_load_and_authorize_resource only: [:twitter_oauth]
-  skip_before_filter :set_user_id, only: [:twitter_oauth]
+  skip_load_and_authorize_resource only: [:oauth, :twitter_oauth]
+  skip_before_filter :set_user_id, only: [:oauth, :twitter_oauth]
+  
+  def oauth
+    @oauth = Koala::Facebook::OAuth.new(ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET'], oauth_user_url("me"))
+    if params[:client_id].present? || params[:code].present?
+      facebook_session = @oauth.try(:get_user_info_from_cookies, cookies) || {}
+      @user = current_user || User.new
+      @user.facebook_access_token = facebook_session["access_token"] || @oauth.get_access_token(params[:code])
+      
+      if @user.new_record?
+        @graph = Koala::Facebook::API.new(@user.facebook_access_token)
+        profile = @graph.get_object("me")
+        
+        if user = (User.find_by_email(profile["email"]) || User.find_by_facebook_id(profile["id"]) || User.find_by_facebook_access_token(@user.facebook_access_token))
+          user.facebook_access_token = @user.facebook_access_token
+          @user = user
+        end
+        
+        @user.name = profile["name"]
+        @user.email = profile["email"]
+        @user.password = @user.facebook_access_token[0..100]
+        @user.facebook_id = profile["id"]
+      elsif !@user.facebook_id
+        @graph = Koala::Facebook::API.new(@user.facebook_access_token)
+        profile = @graph.get_object("me")
+        @user.facebook_id = profile["id"]
+      end
+      
+      @user.save!
+      
+      sign_in @user if !signed_in?
+      
+      redirect_to user_path("me"), notice: "Connected to Facebook!"
+    else
+      redirect_to @oauth.url_for_oauth_code(:permissions => "publish_stream,email,user_likes,publish_actions")
+    end
+  end
   
   def twitter_oauth
     @consumer = OAuth::Consumer.new(ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET'],

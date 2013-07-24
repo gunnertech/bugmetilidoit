@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130716011530) do
+ActiveRecord::Schema.define(:version => 20130724033435) do
 
   create_table "assigned_networks", :force => true do |t|
     t.integer  "network_id"
@@ -96,10 +96,12 @@ ActiveRecord::Schema.define(:version => 20130716011530) do
     t.string   "twitter_access_token"
     t.string   "twitter_access_secret"
     t.integer  "twitter_id"
+    t.string   "facebook_access_token"
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["facebook_access_token"], :name => "index_users_on_facebook_access_token"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["twitter_access_token"], :name => "index_users_on_twitter_access_token"
   add_index "users", ["twitter_id"], :name => "index_users_on_twitter_id"
