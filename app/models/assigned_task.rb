@@ -134,7 +134,7 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def send_creation_message_to_facebook
-    post_to_facebook("Just scheduled a task to do: #{task.to_s}. Click 'Like' if you think I'm going to finish it on time or comment and tell me why you think I won't.")
+    post_to_facebook("Just scheduled a task to do -- #{task.to_s} -- by #{I18n.l(remind_at)}. Click 'Like' if you think I'm going to finish it on time or comment and tell me why you think I won't.")
   end
   
   def post_to_facebook(message=nil,token=nil,url=nil)
