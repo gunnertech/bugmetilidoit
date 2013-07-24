@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
   
   before_validation :remove_twitter_token, if: Proc.new{ |user| user.disconnect_from_twitter == "1" }
   before_save :ensure_authentication_token
+  before_save :set_default_time_zone
   
   def to_s
     name
@@ -25,5 +26,9 @@ class User < ActiveRecord::Base
   def remove_twitter_token
     self.twitter_access_token = nil
     self.twitter_access_secret = nil
+  end
+  
+  def set_default_time_zone
+    self.time_zone ||= "Eastern Time (US & Canada)"
   end
 end
