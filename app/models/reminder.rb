@@ -19,7 +19,7 @@ class Reminder < ActiveRecord::Base
       return true
     end
     
-    body = "Stop being lazy and #{task.title}! Did it? Click here: #{u.short_url}"[0..159]
+    body = "Stop being lazy and #{task.title}!"[0..159]
     
     ReminderMailer.reminder_email(self,user).deliver if networks.include?(Network.find_or_create_by_name('Email'))
     
@@ -31,7 +31,7 @@ class Reminder < ActiveRecord::Base
         client.account.sms.messages.create(
           :from => "+1#{number}",
           :to => to,
-          :body => "#{body} - Not you? reply 'STOP'"
+          :body => "#{body} Did it? Click here: #{u.short_url} - Not you? reply 'STOP'"
         )
       rescue
         Rails.logger.warn("^^^^BAD COMBO: from: #{number} to: #{to}")
@@ -39,13 +39,13 @@ class Reminder < ActiveRecord::Base
     end
     
     if networks.include?(Network.find_or_create_by_name('Twitter'))
-      body = "@#{user.twitter_user_name} #{body}"[0..139]
+      body = "@#{user.twitter_user_name} #{body} #{assigned_task.url}"[0..139]
       Twitter.update(body)
     end
     
     if networks.include?(Network.find_or_create_by_name('Facebook'))
       if assigned_task.user.facebook_access_token.present?
-        assigned_task.post_to_facebook("I was supposed to #{task.to_s} by now, but I haven't cause I'm lazy. #{full_url}") rescue nil
+        assigned_task.post_to_facebook("I was supposed to #{task.to_s} by now, but I haven't cause I'm lazy. #{assigned_task.url}") rescue nil
       end
     end
     
