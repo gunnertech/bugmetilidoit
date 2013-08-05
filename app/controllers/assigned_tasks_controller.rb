@@ -34,6 +34,10 @@ class AssignedTasksController < InheritedResources::Base
     @assigned_tasks = end_of_association_chain.accessible_by(current_ability).paginate(:page => params[:page])
     if view == 'active'
       @assigned_tasks = @assigned_tasks.order{ remind_at.asc }
+    elsif view == 'completed'
+      @assigned_tasks = @assigned_tasks.order{ completed_at.asc }
+    elsif view == 'abandoned'
+      @assigned_tasks = @assigned_tasks.order{ abandoned_at.asc }
     end
     @assigned_tasks = @assigned_tasks.by_view(view)
   end

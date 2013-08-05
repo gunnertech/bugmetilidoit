@@ -11,7 +11,7 @@ class Reminder < ActiveRecord::Base
   def send_notices
     Bitly.use_api_version_3
     bitly = Bitly.new("gunnertech", "R_b75c09fa28aa15f9e53ccb9245a9acf6")
-    full_url = Rails.application.routes.url_helpers.complete_assigned_task_url(assigned_task, auth_token: user.authentication_token, assigned_task: {action: "complete"}, host: ENV['HOST'])
+    full_url = Rails.application.routes.url_helpers.user_assigned_task_url(user, assigned_task, host: ENV['HOST'])
     begin
       u = bitly.shorten(full_url)
     rescue

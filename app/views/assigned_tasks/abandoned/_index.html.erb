@@ -30,7 +30,7 @@
         <td><%= link_to assigned_task, assigned_task.task %></td>
         <td><%= assigned_task.reminder_frequency %> <%= t('minutes') %></td>
         <td><%= assigned_task.reminders.count %></td>
-        <td><time class="convert"><%=l assigned_task.abandoned_at if assigned_task.abandoned_at %></time></td>
+        <td><time class="convert"><%=l assigned_task.abandoned_at.in_time_zone(current_user.try(:time_zone) || "Eastern Time (US & Canada)") if assigned_task.abandoned_at %></time></td>
       </tr>
     <% end %>
   </tbody>
