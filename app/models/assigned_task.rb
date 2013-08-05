@@ -123,13 +123,23 @@ class AssignedTask < ActiveRecord::Base
     end
   end
   
+  def phrase
+    if time_to_complete < 60
+      "#{time_to_complete} minutes"
+    elsif time_to_complete < 1440
+      "#{time_to_complete/60} hours"
+    else
+      "#{time_to_complete/1440} days"
+    end
+  end
+  
   def post_to_twitter
     client = Twitter::Client.new(
       :oauth_token => user.twitter_access_token,
       :oauth_token_secret => user.twitter_access_secret
     )
     
-    client.update("Just completed a task (#{self.to_s}) after #{time_to_complete} minutes and #{reminders.count} reminders. #{url}")
+    client.update("Just completed a task (#{self.to_s}) after #{phrase} and #{reminders.count} reminders. #{url}")
   end
   
   def send_creation_message_to_facebook
@@ -139,7 +149,7 @@ class AssignedTask < ActiveRecord::Base
   def post_to_facebook(message=nil,token=nil,url=nil)
     token ||= user.facebook_access_token
     url ||= Rails.application.routes.url_helpers.task_url(task, host: ENV['HOST'])
-    message ||= "Just completed a task (#{task.to_s}) after #{time_to_complete} minutes and #{reminders.count} reminders."
+    message ||= "Just completed a task (#{task.to_s}) after #{phrase} and #{reminders.count} reminders."
     graph = Koala::Facebook::API.new(token)
     graph.put_connections("me", "feed", message: "#{message} #{url}")
   end

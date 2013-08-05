@@ -31,7 +31,7 @@ class Reminder < ActiveRecord::Base
         client.account.sms.messages.create(
           :from => "+1#{number}",
           :to => to,
-          :body => "#{body} Did it? Click here: #{u.short_url} - Not you? reply 'STOP'"
+          :body => "#{body} Did it? Click here: #{full_url} - Not you? reply 'STOP'"
         )
       rescue
         Rails.logger.warn("^^^^BAD COMBO: from: #{number} to: #{to}")
@@ -40,7 +40,7 @@ class Reminder < ActiveRecord::Base
     
     if networks.include?(Network.find_or_create_by_name('Twitter'))
       body = "@#{user.twitter_user_name} #{body} #{assigned_task.url}"[0..139]
-      Twitter.update(body)
+      Twitter.update(body) unless user.twitter_user_name.blank?
     end
     
     if networks.include?(Network.find_or_create_by_name('Facebook'))
