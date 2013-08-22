@@ -44,7 +44,7 @@
               <li>
                 <%= link_to t('mark_completed'),
                             user_assigned_task_path(current_user,assigned_task, view: params[:view], assigned_task: {action: "complete"}),
-                            :method => :put if assigned_task.starts_at < Time.now %>
+                            :method => :put if assigned_task.starts_at && assigned_task.starts_at < Time.now %>
               </li>
               <li>
                 <%= link_to t('abandon'),

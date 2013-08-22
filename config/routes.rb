@@ -1,4 +1,12 @@
 Bugmetilidoit::Application.routes.draw do
+  devise_scope :user do
+    namespace :api do
+      namespace :v1 do
+        resources :sessions, :only => [:create, :destroy]
+      end
+    end
+  end
+  
   resources :assigned_networks
   
   resources :networks

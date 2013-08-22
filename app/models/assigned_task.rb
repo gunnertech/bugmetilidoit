@@ -7,8 +7,8 @@ class AssignedTask < ActiveRecord::Base
   has_many :assigned_networks, dependent: :destroy
   has_many :networks, through: :assigned_networks
   
-  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at, :recurring_rule, :starts_at_zone, :starts_at_temp, :reminder_interval, :raw_reminder_frequency
-  attr_accessor :task_title, :action, :starts_at_zone, :starts_at_temp
+  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at, :recurring_rule, :starts_at_zone, :starts_at_temp, :reminder_interval, :raw_reminder_frequency, :due_in, :due_in_period, :source, :guid
+  attr_accessor :task_title, :action, :starts_at_zone, :starts_at_temp, :due_in, :due_in_period
   
   validates :task_title, presence: true
   validates :reminder_frequency, presence: true, numericality: {greater_than: 15}
@@ -20,6 +20,15 @@ class AssignedTask < ActiveRecord::Base
   before_create :set_next_reminder_time
   after_save :set_starts_at
   after_create :send_creation_message_to_facebook, if: Proc.new { |assigned_task| assigned_task.user.facebook_access_token.present? }
+  before_validation :set_from_simple, if: Proc.new { |assigned_task| assigned_task.due_in.present? }
+  
+  def set_from_simple
+    self.network_ids = [Network.find_by_name("Email").id, Network.find_by_name("SMS").id]
+    self.starts_at ||= due_in.to_i.send(due_in_period.downcase.to_sym).from_now
+    self.reminder_frequency ||= 1.days / 60
+    self.reminder_interval = "Days"
+    
+  end
   
   
   def schedule
@@ -35,6 +44,26 @@ class AssignedTask < ActiveRecord::Base
   def url
     "http://#{ENV['HOST']}/tasks/#{task.to_param}"
   end
+  
+  def update_url
+    "http://#{ENV['HOST']}/users/me/assigned_tasks/#{self.to_param}"
+  end
+  
+  def as_json(options={})
+    super(:methods => [:url, :update_url, :zoned_remind_at, :zoned_completed_at], include: {task: {}})
+  end
+  
+  def zoned_remind_at
+    # remind_at.in_time_zone(user.time_zone).strftime("%m/%d/%Y %I:%M %p")
+    remind_at.in_time_zone(user.time_zone).strftime("%m/%d/%Y")
+  end
+  
+  def zoned_completed_at
+    
+    # completed_at.in_time_zone(user.time_zone).strftime("%m/%d/%Y %I:%M %p")
+    completed_at.present? ? completed_at.in_time_zone(user.time_zone).strftime("%m/%d/%Y") : nil
+  end
+  
   
   class << self
     def average_seconds_to_completion(relation=nil)

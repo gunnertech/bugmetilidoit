@@ -3,6 +3,7 @@ class AssignedTasksController < InheritedResources::Base
   load_and_authorize_resource :assigned_task, through: :user, shallow: true, except: [:index]
   has_scope :filter, type: :hash
   has_scope :by_view
+  respond_to :json
   
   before_filter :authorize_parent
   before_filter :set_default_filter
@@ -10,12 +11,12 @@ class AssignedTasksController < InheritedResources::Base
   prepend_before_filter :fix_params, only: [:create,:update]
   
   def create
-    create!{ user_assigned_tasks_url(current_user,view: 'active') }
+    create!{ params[:return_to].present? ? params[:return_to] : user_assigned_tasks_url(current_user,view: 'active') }
   end
   
   def update
     if request.request_method.to_s != "GET"
-      update!{ user_assigned_tasks_url(current_user,view: (params[:view]||"completed")) }
+      update!{ params[:return_to].present? ? params[:return_to] : user_assigned_tasks_url(current_user,view: (params[:view]||"completed")) }
     else
       @assigned_task = current_user.assigned_tasks.find(params[:id])
       @assigned_task.update_attributes(params[:assigned_task])
@@ -40,6 +41,9 @@ class AssignedTasksController < InheritedResources::Base
       @assigned_tasks = @assigned_tasks.order{ abandoned_at.asc }
     end
     @assigned_tasks = @assigned_tasks.by_view(view)
+    @assigned_tasks = @assigned_tasks.where{ guid =~ my{"%#{params[:guid]}%"}} if params[:guid].present?
+    @assigned_tasks = @assigned_tasks.where{ source == my{params[:source]}} if params[:source].present?
+    @assigned_tasks
   end
   
   def set_default_filter

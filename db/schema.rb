@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130724041453) do
+ActiveRecord::Schema.define(:version => 20130821194900) do
 
   create_table "assigned_networks", :force => true do |t|
     t.integer  "network_id"
@@ -36,6 +36,8 @@ ActiveRecord::Schema.define(:version => 20130724041453) do
     t.text     "recurring_rule"
     t.integer  "raw_reminder_frequency"
     t.string   "reminder_interval"
+    t.string   "source"
+    t.string   "guid"
   end
 
   add_index "assigned_tasks", ["task_id"], :name => "index_assigned_tasks_on_task_id"
@@ -76,18 +78,18 @@ ActiveRecord::Schema.define(:version => 20130724041453) do
   add_index "tasks", ["title"], :name => "index_tasks_on_title"
 
   create_table "users", :force => true do |t|
-    t.string   "email",                  :default => "", :null => false
-    t.string   "encrypted_password",     :default => "", :null => false
+    t.string   "email",                               :default => "", :null => false
+    t.string   "encrypted_password",                  :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          :default => 0
+    t.integer  "sign_in_count",                       :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",                                          :null => false
+    t.datetime "updated_at",                                          :null => false
     t.string   "name"
     t.string   "authentication_token"
     t.string   "mobile"
@@ -95,9 +97,9 @@ ActiveRecord::Schema.define(:version => 20130724041453) do
     t.string   "time_zone"
     t.string   "twitter_access_token"
     t.string   "twitter_access_secret"
-    t.integer  "twitter_id"
+    t.integer  "twitter_id",             :limit => 8
     t.string   "facebook_access_token"
-    t.integer  "facebook_id"
+    t.integer  "facebook_id",            :limit => 8
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
