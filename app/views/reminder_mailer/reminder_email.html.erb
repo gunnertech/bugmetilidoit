@@ -4,7 +4,7 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <h1><%= @user.name %>, <%= @reminder.task.title %>!</h1>
+    <h1><%= @reminder.task.title %>!</h1>
     <p>
       If not, you better do it, cause we're going to keep bugging you until you do!
     </p>
@@ -12,7 +12,7 @@
       We've reminded you <%= @reminder.assigned_task.reminders.count %> times so far.
     </p>
     <p>
-      If you have done it, congratulations! You're awesome! Just <%= link_to "click this link", user_assigned_task_url(@reminder.user, @reminder.assigned_task) %>
+      If you have done it, congratulations! You're awesome! Just <%= link_to "click this link", (@reminder.assigned_task.task_url.present? ? @reminder.assigned_task.task_url : @reminder.assigned_task.url) %>
     </p>
     <p>
       If you haven't done it, and want to stop, getting this notification, you need to log into your account and abandon this task. Why no link? We don't want to make it so easy to give up!

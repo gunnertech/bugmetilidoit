@@ -7,7 +7,7 @@ class AssignedTask < ActiveRecord::Base
   has_many :assigned_networks, dependent: :destroy
   has_many :networks, through: :assigned_networks
   
-  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at, :recurring_rule, :starts_at_zone, :starts_at_temp, :reminder_interval, :raw_reminder_frequency, :due_in, :due_in_period, :source, :guid
+  attr_accessible :completed_at, :reminder_frequency, :task_title, :action, :network_ids, :starts_at, :recurring_rule, :starts_at_zone, :starts_at_temp, :reminder_interval, :raw_reminder_frequency, :due_in, :due_in_period, :source, :guid, :task_url
   attr_accessor :task_title, :action, :starts_at_zone, :starts_at_temp, :due_in, :due_in_period
   
   validates :task_title, presence: true
@@ -172,7 +172,7 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def send_creation_message_to_facebook
-    post_to_facebook("Just scheduled a task to do -- #{task.to_s} -- by #{I18n.l(remind_at)}. Click 'Like' if you think I'm going to finish it on time or comment and tell me why you think I won't.") rescue nil
+    post_to_facebook("I need to #{task.to_s} by #{I18n.l(remind_at)}. Click 'Like' if you think I'm going to finish it on time or comment and tell me why you think I won't.") rescue nil
   end
   
   def post_to_facebook(message=nil,token=nil,url=nil)

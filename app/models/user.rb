@@ -22,6 +22,9 @@ class User < ActiveRecord::Base
     name
   end
   
+  def as_json(options={})
+    super(:methods => [:authentication_token])
+  end
   
   def remove_twitter_token
     self.twitter_access_token = nil

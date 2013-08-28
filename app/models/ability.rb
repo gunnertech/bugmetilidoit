@@ -8,6 +8,7 @@ class Ability
       # cannot :create, AssignedTask if user.assigned_tasks.by_view('active').count > 0
     elsif !user.new_record?
       can :read, User, :id => user.id
+      can :read, User
       
       can [:update,:read], AssignedTask, :user_id => user.id
       can :create, AssignedTask
@@ -15,6 +16,7 @@ class Ability
       
       can :read, Task
     else
+      can :read, User
       can :read, Task
     end
   end

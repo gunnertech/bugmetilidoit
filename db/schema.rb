@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130821194900) do
+ActiveRecord::Schema.define(:version => 20130828045856) do
 
   create_table "assigned_networks", :force => true do |t|
     t.integer  "network_id"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(:version => 20130821194900) do
     t.string   "reminder_interval"
     t.string   "source"
     t.string   "guid"
+    t.string   "task_url"
   end
 
   add_index "assigned_tasks", ["task_id"], :name => "index_assigned_tasks_on_task_id"

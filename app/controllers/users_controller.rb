@@ -1,4 +1,5 @@
 class UsersController < InheritedResources::Base
+  respond_to :json
   skip_load_and_authorize_resource only: [:oauth, :twitter_oauth]
   skip_before_filter :set_user_id, only: [:oauth, :twitter_oauth]
   
@@ -93,7 +94,13 @@ class UsersController < InheritedResources::Base
   def set_user_id
     if !devise_controller?
       redirect_to new_user_session_path and return false if !signed_in? && params[:user_id] == 'me'
-      params[:id] = current_user.id if params[:id] == 'me'
+      params[:id] = current_user.try(:id) if params[:id] == 'me'
+      if params[:email].present? && action_name == 'show'
+        params[:id] = User.find_by_email(params[:email]).try(:id)
+        if params[:id].blank?
+          render status: 404, json: {error: "User Does Not Exist"}.to_json and return
+        end
+      end
     end
   end
   
