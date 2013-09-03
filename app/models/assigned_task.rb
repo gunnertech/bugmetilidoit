@@ -114,7 +114,29 @@ class AssignedTask < ActiveRecord::Base
     return @starts_at_zone if starts_at_temp.nil? || (@starts_at_zone.present? && !@starts_at_zone.is_a?(String))
     @starts_at_zone = if user
       zone = ActiveSupport::TimeZone[user.time_zone]
-      DateTime.strptime("#{starts_at_temp.to_s} #{zone.tzinfo.current_period.offset.utc_total_offset.to_f / 3600.0}","%m/%d/%Y %I:%M %p %Z")#.in_time_zone(user.time_zone)
+      # raise "#{starts_at_temp.to_s} #{Time.now.strftime('%Z')}"
+      offset = zone.tzinfo.current_period.offset.utc_total_offset.to_f / 3600.0
+      if offset.abs > 9
+        
+        if offset < 0
+          offset_string = "#{offset.to_i}:00"
+        else
+          offset_string = "+#{offset.to_i}:00"
+        end
+      else
+        if offset < 0
+          offset_string = "-0#{offset.to_i.abs}:00"
+        else
+          offset_string = "+0#{offset.to_i.abs}:00"
+        end
+        
+      end
+      # raise "#{starts_at_temp.to_s.upcase} #{offset_string}"
+      # raise Time.now.strftime("%m/%d/%Y %I:%M %p %Z")
+      # raise "#{starts_at_temp.to_s.upcase} #{Time.now.strftime('%Z')}"
+      # DateTime.strptime("#{starts_at_temp.to_s} #{zone.tzinfo.current_period.offset.utc_total_offset.to_f / 3600.0}","%m/%d/%Y %I:%M %p %Z")#.in_time_zone(user.time_zone)
+      # DateTime.strptime("#{starts_at_temp.to_s} #{Time.now.strftime('%Z')}","%m/%d/%Y %I:%M %p %Z")#.in_time_zone(user.time_zone)
+      DateTime.strptime("#{starts_at_temp.to_s.upcase} #{offset_string}","%m/%d/%Y %I:%M %p %Z")#.in_time_zone(user.time_zone)
     else
       DateTime.strptime(starts_at_temp.to_s,"%m/%d/%Y %I:%M %p")
     end
@@ -134,7 +156,7 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def time_to_complete
-    (((completed_at||0) - created_at)/60).to_i
+    (((completed_at||0) - starts_at)/60).to_i
   end
   
   def average_completion_time
