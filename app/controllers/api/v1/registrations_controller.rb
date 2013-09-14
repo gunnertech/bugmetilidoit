@@ -13,8 +13,7 @@ class Api::V1::RegistrationsController < ApplicationController
     end
 
     if user.save
-      render :json => user.as_json(:authentication_token=>user.authentication_token, :email=>user.email), :status=>201
-      return
+      render :json => {:authentication_token=>user.authentication_token, :email=>user.email}.to_json, :status=>201
     else
       warden.custom_failure!
       render :json => user.errors, :status=>422
