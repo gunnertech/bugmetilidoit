@@ -14,16 +14,19 @@
 <% end %>
 
 <%= simple_form_for [parent,resource], :html => { :class => 'form-horizontal' } do |f| %>
+  <%= hidden_field_tag :view, 'active' %>
   <% if @task.present? %>
-    <%= f.input :task_title, as: "string", input_html: {class: "live-search", 'data-url' => tasks_path(:json), value: @task.to_s} %>
-  <% else %>
+    <%= f.input :task_title, as: "string", input_html: {disabled: 'disabled', class: "live-search", 'data-url' => tasks_path(:json), value: @task.to_s} %>
+  <% elsif f.object.new_record? %>
     <%= f.input :task_title, as: "string", input_html: {class: "live-search", 'data-url' => tasks_path(:json)} %>
+  <% else %>
+    <%= f.input :task_title, as: "string", input_html: {disabled: 'disabled', class: "live-search", 'data-url' => tasks_path(:json)} %>
   <% end %>
   <%= f.input :raw_reminder_frequency, label: "Reminder Frequency", input_html: {step: 1} %>
   <%= f.input :reminder_interval, collection: ['Minutes', 'Hours', 'Days', 'Weeks', 'Months', 'Years'] %>
   
   <% Time.use_zone(current_user.time_zone) do %>
-    <%= f.input :starts_at_zone, label: "Starts at", input_html: {class: "datetime", value: f.object.starts_at_zone.nil? ? nil : f.object.starts_at_zone.strftime('%m/%d/%Y %I:%M %p') } %>
+    <%= f.input :starts_at_zone, required: true, label: "Starts at", input_html: {class: "datetime", value: f.object.starts_at_zone.nil? ? nil : f.object.starts_at_zone.strftime('%m/%d/%Y %I:%M %p') } %>
   <% end %>
   
   <div class="control-group integer required assigned_task_recurring_rule">

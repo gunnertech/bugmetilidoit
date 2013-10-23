@@ -111,7 +111,12 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def starts_at_zone
-    return @starts_at_zone if starts_at_temp.nil? || (@starts_at_zone.present? && !@starts_at_zone.is_a?(String))
+    return_val = @starts_at_zone if starts_at_temp.nil? || (@starts_at_zone.present? && !@starts_at_zone.is_a?(String))
+    if return_val.nil? && !new_record?
+      return starts_at.in_time_zone(user.time_zone)
+    else
+      return return_val
+    end
     @starts_at_zone = if user
       zone = ActiveSupport::TimeZone[user.time_zone]
       # raise "#{starts_at_temp.to_s} #{Time.now.strftime('%Z')}"
@@ -136,7 +141,7 @@ class AssignedTask < ActiveRecord::Base
       # raise "#{starts_at_temp.to_s.upcase} #{Time.now.strftime('%Z')}"
       # DateTime.strptime("#{starts_at_temp.to_s} #{zone.tzinfo.current_period.offset.utc_total_offset.to_f / 3600.0}","%m/%d/%Y %I:%M %p %Z")#.in_time_zone(user.time_zone)
       # DateTime.strptime("#{starts_at_temp.to_s} #{Time.now.strftime('%Z')}","%m/%d/%Y %I:%M %p %Z")#.in_time_zone(user.time_zone)
-      DateTime.strptime("#{starts_at_temp.to_s.upcase} #{offset_string}","%m/%d/%Y %I:%M %p %Z")#.in_time_zone(user.time_zone)
+      DateTime.strptime("#{starts_at_temp.to_s.upcase} #{offset_string}","%m/%d/%Y %I:%M %p %Z") rescue nil
     else
       DateTime.strptime(starts_at_temp.to_s,"%m/%d/%Y %I:%M %p")
     end
@@ -194,7 +199,11 @@ class AssignedTask < ActiveRecord::Base
   end
   
   def send_creation_message_to_facebook
-    post_to_facebook("I need to #{task.to_s} by #{I18n.l(remind_at)}. Click 'Like' if you think I'm going to finish it on time or comment and tell me why you think I won't.") rescue nil
+    if networks.include?(Network.find_or_create_by_name('Facebook'))
+      if user.facebook_access_token.present?
+        post_to_facebook("I need to #{task.to_s} by #{I18n.l(remind_at)}. Click 'Like' if you think I'm going to finish it on time or comment and tell me why you think I won't.") rescue nil
+      end
+    end
   end
   
   def post_to_facebook(message=nil,token=nil,url=nil)
@@ -202,7 +211,7 @@ class AssignedTask < ActiveRecord::Base
     url ||= Rails.application.routes.url_helpers.task_url(task, host: ENV['HOST'])
     message ||= "Just completed a task (#{task.to_s}) after #{phrase} and #{reminders.count} reminders."
     graph = Koala::Facebook::API.new(token)
-    # graph.put_connections("me", "feed", message: "#{message} #{url}")
+    graph.put_connections("me", "feed", message: "#{message} #{url}")
   end
   
   protected
@@ -219,16 +228,17 @@ class AssignedTask < ActiveRecord::Base
       if user.facebook_access_token
         post_to_facebook rescue nil
       end
-      AssignedTask.create! do |assigned_task|
-        assigned_task.user = user
-        assigned_task.task = task
-        # assigned_task.remind_at = remind_at
-        assigned_task.reminder_frequency = reminder_frequency
-        assigned_task.recurring_rule = self.read_attribute(:recurring_rule)
-        assigned_task.starts_at = schedule.next_occurrence unless schedule.nil?
-        assigned_task.networks << networks
+      unless schedule.nil?
+        AssignedTask.create! do |assigned_task|
+          assigned_task.user = user
+          assigned_task.task = task
+          # assigned_task.remind_at = remind_at
+          assigned_task.reminder_frequency = reminder_frequency
+          assigned_task.recurring_rule = self.read_attribute(:recurring_rule)
+          assigned_task.starts_at = schedule.next_occurrence
+          assigned_task.networks << networks
+        end
       end
-      
     end
   end
   
