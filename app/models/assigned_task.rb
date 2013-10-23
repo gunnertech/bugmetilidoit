@@ -202,7 +202,7 @@ class AssignedTask < ActiveRecord::Base
     url ||= Rails.application.routes.url_helpers.task_url(task, host: ENV['HOST'])
     message ||= "Just completed a task (#{task.to_s}) after #{phrase} and #{reminders.count} reminders."
     graph = Koala::Facebook::API.new(token)
-    graph.put_connections("me", "feed", message: "#{message} #{url}")
+    # graph.put_connections("me", "feed", message: "#{message} #{url}")
   end
   
   protected
