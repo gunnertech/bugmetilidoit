@@ -112,9 +112,9 @@ class AssignedTask < ActiveRecord::Base
   
   def starts_at_zone
     return_val = @starts_at_zone if starts_at_temp.nil? || (@starts_at_zone.present? && !@starts_at_zone.is_a?(String))
-    if return_val.nil? && !new_record?
+    if return_val.nil? && !new_record? && starts_at.present?
       return starts_at.in_time_zone(user.time_zone)
-    else
+    elsif return_val.present?
       return return_val
     end
     @starts_at_zone = if user
@@ -141,6 +141,7 @@ class AssignedTask < ActiveRecord::Base
       # raise "#{starts_at_temp.to_s.upcase} #{Time.now.strftime('%Z')}"
       # DateTime.strptime("#{starts_at_temp.to_s} #{zone.tzinfo.current_period.offset.utc_total_offset.to_f / 3600.0}","%m/%d/%Y %I:%M %p %Z")#.in_time_zone(user.time_zone)
       # DateTime.strptime("#{starts_at_temp.to_s} #{Time.now.strftime('%Z')}","%m/%d/%Y %I:%M %p %Z")#.in_time_zone(user.time_zone)
+      
       DateTime.strptime("#{starts_at_temp.to_s.upcase} #{offset_string}","%m/%d/%Y %I:%M %p %Z") rescue nil
     else
       DateTime.strptime(starts_at_temp.to_s,"%m/%d/%Y %I:%M %p")
