@@ -19,7 +19,7 @@ class AssignedTask < ActiveRecord::Base
   before_validation :fire_action, if: Proc.new { |assigned_task| assigned_task.action.present? }
   before_create :set_next_reminder_time
   after_save :set_starts_at
-  after_create :send_creation_message_to_facebook, if: Proc.new { |assigned_task| assigned_task.user.facebook_access_token.present? }
+  after_create :send_creation_message_to_facebook, if: Proc.new { |assigned_task| assigned_task.send_to_facebook? }
   before_validation :set_from_simple, if: Proc.new { |assigned_task| assigned_task.due_in.present? }
   
   def set_from_simple
@@ -199,12 +199,16 @@ class AssignedTask < ActiveRecord::Base
     client.update("Just completed a task (#{self.to_s}) after #{phrase} and #{reminders.count} reminders. #{url}")
   end
   
+  def send_to_facebook?
+    networks.include?(Network.find_or_create_by_name('Facebook')) && user.facebook_access_token.present?
+  end
+  
+  def send_to_twitter?
+    networks.include?(Network.find_or_create_by_name('Twitter')) && user.twitter_access_token.present?
+  end
+  
   def send_creation_message_to_facebook
-    if networks.include?(Network.find_or_create_by_name('Facebook'))
-      if user.facebook_access_token.present?
-        post_to_facebook("I need to #{task.to_s} by #{I18n.l(remind_at)}. Click 'Like' if you think I'm going to finish it on time or comment and tell me why you think I won't.") rescue nil
-      end
-    end
+    post_to_facebook("I need to #{task.to_s} by #{I18n.l(remind_at)}. Click 'Like' if you think I'm going to finish it on time or comment and tell me why you think I won't.") rescue nil
   end
   
   def post_to_facebook(message=nil,token=nil,url=nil)
@@ -223,10 +227,10 @@ class AssignedTask < ActiveRecord::Base
       self.abandoned_at = Time.now
     when "complete"
       self.completed_at = Time.now
-      if user.twitter_access_token
+      if send_to_twitter?
         post_to_twitter rescue nil 
       end
-      if user.facebook_access_token
+      if send_to_facebook?
         post_to_facebook rescue nil
       end
       unless schedule.nil?
