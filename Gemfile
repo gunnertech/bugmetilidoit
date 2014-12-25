@@ -18,8 +18,8 @@ gem 'capybara', '>= 2.0.2', :group => :test
 gem 'factory_girl_rails', '>= 4.2.0', :group => [:development, :test]
 gem 'less-rails', '>= 2.2.6', :group => :assets
 gem 'twitter-bootstrap-rails', '>= 2.2.4', :group => :assets
-gem 'libv8', '>= 3.11.8'
-gem 'therubyracer', '>= 0.11.3', :group => :assets, :platform => :ruby, :require => 'v8'
+# gem 'libv8', '>= 3.11.8'
+gem 'therubyracer', '>= 0.11.3', :group => :assets, :platform => :ruby
 gem 'devise', '>= 2.2.3'
 gem 'cancan', '>= 1.6.8'
 gem 'rolify', '>= 3.2.0'
